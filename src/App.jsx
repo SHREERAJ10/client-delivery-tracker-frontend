@@ -6,6 +6,7 @@ import AuthContext from "./context/AuthContext.jsx";
 import { useContext, useEffect } from "react";
 import { auth } from "../config/firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
+import Layout from "./components/Layout.jsx";
 
 const router = createBrowserRouter([
   {

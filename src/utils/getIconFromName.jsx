@@ -1,14 +1,40 @@
-import { Lock, Mail, UserRound } from 'lucide-react'
+import {
+  ChartNoAxesCombinedIcon,
+  ClipboardListIcon,
+  LayoutDashboard,
+  Lock,
+  Mail,
+  Settings,
+  UserRound,
+  UsersIcon,
+} from "lucide-react";
 
-function getIconFromName(icon) {
-    switch(icon){
-        case "UserRound":
-            return <UserRound size={20} strokeWidth={2} color="#7C7C7C" />
-        case "Lock":
-            return <Lock size={20} strokeWidth={2} color="#7C7C7C" />
-        case "Mail":
-            return <Mail size={20} strokeWidth={2} color="#7C7C7C" />
-    }
+function getIconFromName(
+  icon,
+  className = "",
+  iconConfig = {size:20, strokeWidth:2, color:"#7C7C7C"},
+) {
+
+    const {size, strokeWidth, color} = iconConfig;
+
+  switch (icon) {
+    case "UserRound":
+      return <UserRound size={size} strokeWidth={strokeWidth} color={color} />;
+    case "Lock":
+      return <Lock size={size} strokeWidth={strokeWidth} color={color} />;
+    case "Mail":
+      return <Mail size={size} strokeWidth={strokeWidth} color={color} />;
+    case "LayoutDashboard":
+      return <LayoutDashboard size={size} strokeWidth={strokeWidth} color={color} className={className} />;
+    case "UsersIcon":
+      return <UsersIcon size={size} strokeWidth={strokeWidth} color={color} className={className} />;
+    case "ClipboardListIcon":
+      return <ClipboardListIcon size={size} strokeWidth={strokeWidth} color={color} className={className} />;
+    case "ChartNoAxesCombinedIcon":
+      return <ChartNoAxesCombinedIcon size={32} strokeWidth={strokeWidth} color={color} className={className} />;
+    case "Settings":
+      return <Settings size={size} strokeWidth={strokeWidth} color={color} className={className} />;
+  }
 }
 
 export default getIconFromName;
