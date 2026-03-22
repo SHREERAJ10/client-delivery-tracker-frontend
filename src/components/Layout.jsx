@@ -8,8 +8,7 @@ function Layout() {
     <div>
       <SidebarProvider>
         <AppSidebar />
-        <main>
-          <SidebarTrigger />
+        <main className="w-full">
           <Outlet />
         </main>
       </SidebarProvider>

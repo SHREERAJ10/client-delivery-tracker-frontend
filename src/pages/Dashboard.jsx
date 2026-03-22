@@ -1,11 +1,12 @@
-import React from "react";
-import { logout } from "../utils/AuthHandlers.jsx";
-import { LogOut } from "lucide-react";
+import DashboardNavbar from "@/components/DashboardNavbar.jsx";
+import MetricsGrid from "@/components/MetricsGrid.jsx";
 
 function Dashboard() {
+
   return (
-    <div>
-      Dashboard
+    <div className="w-full">
+      <DashboardNavbar />
+      <MetricsGrid />
     </div>
   );
 }
