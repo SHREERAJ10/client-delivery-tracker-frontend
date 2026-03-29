@@ -7,12 +7,16 @@ import { useContext, useEffect } from "react";
 import { auth } from "../config/firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 import Layout from "./components/Layout.jsx";
+import ClientPage from "./pages/ClientPage.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     Component: ProtectedRoute,
-    children: [{ index: true, Component: Dashboard }],
+    children: [
+      { index: true, Component: Dashboard },
+      {path:'/client', Component: ClientPage},
+    ],
   },
   { path: "/login", Component: Login },
 ]);

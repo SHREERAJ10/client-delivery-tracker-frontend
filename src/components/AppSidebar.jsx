@@ -28,17 +28,18 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/utils/AuthHandlers.jsx";
+import { NavLink } from "react-router-dom";
 
 const sidebarItems = [
   {
     label: "Dashboard",
     icon: "LayoutDashboard",
-    path: "#",
+    path: "/",
   },
   {
     label: "Clients",
     icon: "UsersIcon",
-    path: "#",
+    path: "/client",
   },
   {
     label: "Deliverables",
@@ -78,12 +79,12 @@ export const AppSidebar = () => {
                 return (
                   <SidebarMenuItem key={index}>
                     <SidebarMenuButton asChild size={32}>
-                      <a href="#">
+                      <NavLink to={item.path}>
                         {getIconFromName(item.icon, "!w-5 !h-5")}
                         <span className="font-primary font-semibold text-base text-[#222222]">
                           {item.label}
                         </span>
-                      </a>
+                      </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
