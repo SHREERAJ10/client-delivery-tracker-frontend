@@ -1,7 +1,7 @@
 import { Plus, Search } from "lucide-react";
 import { SidebarTrigger } from "./ui/sidebar.jsx";
 
-export default function DashboardNavbar() {
+export default function DashboardNavbar({setIsFormOpen}) {
   return (
     <nav className="w-full h-16 bg-white border-b flex items-center justify-between px-4 md:pr-8 md:pl-4">
 
@@ -22,7 +22,7 @@ export default function DashboardNavbar() {
           className="hidden lg:block w-48 md:w-64 px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
+        <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition" onClick={()=>setIsFormOpen(true)}>
           <Plus size={16} />
           <span className="hidden sm:inline">New Delivery</span>
         </button>
