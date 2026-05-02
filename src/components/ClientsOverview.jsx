@@ -1,19 +1,29 @@
 import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
 import React, { useContext, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 function ClientsOverview() {
   const { user } = useContext(AuthContext);
-  const [clients, setClients] = useState([]);
+  const [clientData, setClientData] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  console.log(clients);
+  const currPage = Number(searchParams.get("page") || 1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     (async () => {
-      const clientData = await getData(user, "/client");
-      setClients(clientData.items);
+      const clientOverviewData = await getData(
+        user,
+        `/client/overview/?page=${currPage}`,
+      );
+      setClientData(clientOverviewData);
     })();
-  }, []);
+  }, [searchParams]);
+
+  const handlePageChange = (newPage) => {
+    setSearchParams({ page: newPage });
+  };
 
   return (
     <section>
@@ -31,15 +41,15 @@ function ClientsOverview() {
             </thead>
 
             <tbody className="bg-white">
-              {clients.length !== 0 ? (
-                clients.map((client, index) => (
+              {clientData != null && clientData.items.length !== 0 ? (
+                clientData.items.map((client, index) => (
                   <tr key={index} className="border-t text-sm hover:bg-gray-50">
                     <td className="p-4 align-middle">{client.name}</td>
                     <td className="p-4 text-center align-middle">
                       {client.project.active || 0}
                     </td>
                     <td className="p-4 text-center align-middle">
-                      {client.deliverable.open  || 0}
+                      {client.deliverable.open || 0}
                     </td>
                     <td className="p-4 text-center align-middle">
                       {client.deliverable.overdue || 0}
@@ -59,8 +69,8 @@ function ClientsOverview() {
 
         {/* Mobile Cards */}
         <div className="lg:hidden flex flex-col gap-4">
-          {clients.length != 0 ? (
-            clients.map((client, index) => (
+          {clientData != null && clientData.items.length != 0 ? (
+            clientData.items.map((client, index) => (
               <div
                 key={index}
                 className="border border-gray-200 rounded-xl p-4 bg-white"
@@ -93,8 +103,30 @@ function ClientsOverview() {
           )}
         </div>
       </div>
-      <div>
-        
+      <div className="flex justify-around">
+        <button
+          id="previous"
+          className="p-4 border border-black"
+          onClick={() =>
+            handlePageChange(currPage > 1 ? currPage - 1 : currPage)
+          }
+        >
+          previous
+        </button>
+        <button
+          id="forward"
+          className="p-4 border border-black"
+          onClick={() =>
+            handlePageChange(
+              clientData != null &&
+                clientData.totalCount > currPage * itemsPerPage
+                ? currPage + 1
+                : currPage,
+            )
+          }
+        >
+          forward
+        </button>
       </div>
     </section>
   );
