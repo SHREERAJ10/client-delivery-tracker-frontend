@@ -1,27 +1,41 @@
 import { useForm } from "react-hook-form";
 import { createRecord } from "@/utils/api.js";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import AuthContext from "@/context/AuthContext.jsx";
 import Input from "./Input.jsx";
 
 const clientRoute = "/client";
 
-export default function ClientForm({ setIsOpen, mode, prefillData }) {
+export default function ClientForm({
+  setIsOpen,
+  mode,
+  prefillData = {
+    clientName: "",
+    email: "",
+  },
+}) {
   const initialData =
     mode == "UPDATE"
-      ? {
+      ? prefillData
+      : {
           clientName: "",
           email: "",
-        }
-      : prefillData;
+        };
 
   const { register, handleSubmit } = useForm({
     defaultValues: initialData,
   });
   const { user } = useContext(AuthContext);
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="relative w-full max-w-md z-10 flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-6">
           {mode == "UPDATE" ? "Update" : "Add"} Client
@@ -29,8 +43,10 @@ export default function ClientForm({ setIsOpen, mode, prefillData }) {
 
         <form
           className="space-y-5"
-          onSubmit={handleSubmit((data) =>
-            createRecord(user, clientRoute, data),
+          onSubmit={handleSubmit((data) => {
+            createRecord(user, clientRoute, data);
+            setIsOpen(false);
+          }
           )}
         >
           <Input
@@ -55,7 +71,7 @@ export default function ClientForm({ setIsOpen, mode, prefillData }) {
             <button
               type="button"
               className="px-4 py-2 text-sm rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
-              onClick = {()=>setIsOpen(false)}
+              onClick={() => setIsOpen(false)}
             >
               Cancel
             </button>
