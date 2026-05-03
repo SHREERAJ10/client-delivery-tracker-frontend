@@ -2,32 +2,40 @@ import Filter from "@/components/Filter.jsx";
 import SearchBar from "@/components/SearchBar.jsx";
 import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
-import { EllipsisVertical, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Progress } from "@/components/ui/progress";
-import { MoreHorizontal } from "lucide-react";
+import { useParams, useSearchParams } from "react-router-dom";
 import ProjectCard from "@/components/ProjectCard.jsx";
 
 function ProjectPage() {
   const { clientId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useContext(AuthContext);
   const [clientData, setClientData] = useState(null);
   const [projectData, setProjectData] = useState(null);
 
-  console.log(projectData);
+  const currPage = Number(searchParams.get("page") || 1);
+
+  const handlePageChange = (newPage) => {
+    setSearchParams({ page: newPage });
+  };
 
   useEffect(() => {
     (async () => {
       const client = await getData(user, `/client/${clientId}`);
-      const projectDetails = await getData(
-        user,
-        `/client/${clientId}/project/details`,
-      );
       setClientData(client);
-      setProjectData(projectDetails);
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const projectDetails = await getData(
+        user,
+        `/client/${clientId}/project/details/?page=${currPage}`,
+      );
+      setProjectData(projectDetails);
+    })();
+  }, [searchParams]);
 
   return (
     <div>
@@ -49,13 +57,37 @@ function ProjectPage() {
           </section>
         </div>
         <section className="px-6 flex flex-col gap-y-8">
-          {console.log(projectData)}
           {projectData != null && projectData.items.length != 0
             ? projectData.items.map((project) => {
                 return <ProjectCard key={project.id} {...project} />;
               })
             : null}
         </section>
+        <div className="flex justify-around">
+          <button
+            id="previous"
+            className="p-4 border border-black"
+            onClick={() =>
+              handlePageChange(currPage > 1 ? currPage - 1 : currPage)
+            }
+          >
+            previous
+          </button>
+          <button
+            id="forward"
+            className="p-4 border border-black"
+            onClick={() =>
+              handlePageChange(
+                clientData != null &&
+                  clientData.totalCount > currPage * clientData.pageSize
+                  ? currPage + 1
+                  : currPage,
+              )
+            }
+          >
+            forward
+          </button>
+        </div>
       </div>
     </div>
   );
