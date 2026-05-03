@@ -1,9 +1,10 @@
 import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
 import React, { useContext, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function ClientsOverview() {
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [clientData, setClientData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,11 +40,10 @@ function ClientsOverview() {
                 <th className="p-4 w-[20%] text-center">Overdue</th>
               </tr>
             </thead>
-
             <tbody className="bg-white">
               {clientData != null && clientData.items.length !== 0 ? (
-                clientData.items.map((client, index) => (
-                  <tr key={index} className="border-t text-sm hover:bg-gray-50">
+                clientData.items.map((client) => (
+                  <tr key={client.id} className="border-t text-sm hover:bg-gray-50" onClick={()=>navigate(`/client/${client.id}/project`)}>
                     <td className="p-4 align-middle">{client.name}</td>
                     <td className="p-4 text-center align-middle">
                       {client.project.active || 0}
@@ -70,10 +70,11 @@ function ClientsOverview() {
         {/* Mobile Cards */}
         <div className="lg:hidden flex flex-col gap-4">
           {clientData != null && clientData.items.length != 0 ? (
-            clientData.items.map((client, index) => (
+            clientData.items.map((client) => (
               <div
-                key={index}
+                key={client.id}
                 className="border border-gray-200 rounded-xl p-4 bg-white"
+                onClick={()=>navigate(`/client/${client.id}/project`)}
               >
                 <div className="flex justify-between text-sm py-1">
                   <span className="text-gray-500">Client Name</span>
