@@ -8,6 +8,7 @@ import { auth } from "../config/firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 import Layout from "./components/Layout.jsx";
 import ClientPage from "./pages/ClientPage.jsx";
+import ProjectPage from "./pages/ProjectPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -15,14 +16,14 @@ const router = createBrowserRouter([
     Component: ProtectedRoute,
     children: [
       { index: true, Component: Dashboard },
-      {path:'/client', Component: ClientPage},
+      { path: "client", Component: ClientPage },
+      { path: "client/:clientId/project", Component: ProjectPage },
     ],
   },
   { path: "/login", Component: Login },
 ]);
 
 function App() {
-
   const { setUser } = useContext(AuthContext);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currUser) => {
