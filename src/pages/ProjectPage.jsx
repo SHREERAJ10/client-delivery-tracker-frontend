@@ -6,6 +6,8 @@ import { Plus } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import ProjectCard from "@/components/ProjectCard.jsx";
+import ProjectForm from "@/components/ProjectForm.jsx";
+import Backdrop from "@/components/Backdrop.jsx";
 
 function ProjectPage() {
   const { clientId } = useParams();
@@ -13,6 +15,7 @@ function ProjectPage() {
   const { user } = useContext(AuthContext);
   const [clientData, setClientData] = useState(null);
   const [projectData, setProjectData] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const currPage = Number(searchParams.get("page") || 1);
 
@@ -44,7 +47,10 @@ function ProjectPage() {
           {clientData && clientData.name}
         </h2>
 
-        <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+        <button
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+          onClick={() => setIsFormOpen(true)}
+        >
           <Plus size={18} />
           Add Project
         </button>
@@ -78,8 +84,8 @@ function ProjectPage() {
             className="p-4 border border-black"
             onClick={() =>
               handlePageChange(
-                clientData != null &&
-                  clientData.totalCount > currPage * clientData.pageSize
+                projectData != null &&
+                  projectData.totalCount > currPage * projectData.pageSize
                   ? currPage + 1
                   : currPage,
               )
@@ -89,6 +95,19 @@ function ProjectPage() {
           </button>
         </div>
       </div>
+      {isFormOpen && (
+        <div
+          id="modal-wrapper"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        >
+          <Backdrop setIsOpen={setIsFormOpen} />
+          <ProjectForm
+            setIsOpen={setIsFormOpen}
+            mode="CREATE"
+            currClient={clientData}
+          />
+        </div>
+      )}
     </div>
   );
 }
