@@ -23,3 +23,16 @@ export const createRecord = async (user, route, data) => {
   });
   return (await response.json()).data;
 };
+
+export const updateRecord = async (user, route, data) => {
+  const token = await user.getIdToken();
+  const response = await fetch(`http://localhost:3000${route}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  return (await response.json());
+};
