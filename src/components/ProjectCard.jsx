@@ -1,12 +1,23 @@
-import { EllipsisVertical } from "lucide-react";
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Progress } from "./ui/progress.jsx";
+import KebabMenu from "./KebabMenu.jsx";
+import ConfirmDialog from "./ConfirmDialog.jsx";
+import Backdrop from "./Backdrop.jsx";
+import { deleteRecord } from "@/utils/api.js";
+import AuthContext from "@/context/AuthContext.jsx";
 
-function ProjectCard({ name, status, status_Detail, deliverable }) {
+function ProjectCard({ clientId, id, name, status, status_Detail, deliverable }) {
+  const projectRoute = `/client/${clientId}/project/${id}`;
+  const {user} = useContext(AuthContext);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const deleteProject = async () => {
+    await deleteRecord(user, projectRoute);
+  };
+
   return (
-    <div className="mx-auto w-full max-w-6xl min-w-[320px] rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="mx-auto w-[90%] max-w-6xl min-w-[320px] rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-
         <div className="flex-1">
           <div className="flex items-center gap-x-2">
             <h3 className="text-lg font-semibold text-gray-900">{name}</h3>
@@ -36,10 +47,22 @@ function ProjectCard({ name, status, status_Detail, deliverable }) {
         </div>
 
         <div className="flex items-start justify-end md:ml-4">
-          <button className="rounded-md p-1 hover:bg-gray-100">
-            <EllipsisVertical className="h-5 w-5 text-gray-500" />
-          </button>
+          <KebabMenu setIsDeleteOpen={setIsDialogOpen} />
         </div>
+        {isDialogOpen && (
+          <div
+            id="modal-wrapper"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          >
+            <Backdrop setIsOpen={setIsDialogOpen} />
+            <ConfirmDialog
+              dialogText="Are you sure you want to delete it?"
+              setIsOpen={setIsDialogOpen}
+              action={deleteProject}
+            />
+          </div>
+        )}
+
       </div>
     </div>
   );
