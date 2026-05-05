@@ -63,9 +63,10 @@ function ProjectPage() {
           </section>
         </div>
         <section className="px-6 flex flex-col gap-y-8">
+          {console.log(projectData)}
           {projectData != null && projectData.items.length != 0
             ? projectData.items.map((project) => {
-                return <ProjectCard key={project.id} {...project} clientId={clientId} />;
+                return <ProjectCard key={project.id} {...project} currClient={clientData} />;
               })
             : null}
         </section>

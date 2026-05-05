@@ -5,8 +5,9 @@ import { useForm } from "react-hook-form";
 import Input from "./Input.jsx";
 import { convertToISOString } from "@/utils/convertToISOString.js";
 
-function ProjectForm({ setIsOpen, prefillData, mode, currClient }) {
-  const projectRoute = `/client/${currClient.id}/project`;
+function ProjectForm({ setIsOpen, id, prefillData, mode, currClient }) {
+  const createRoute = `/client/${currClient.id}/project`;
+  const updateRoute = `/client/${currClient.id}/project/${id}`;
   const initialData =
     mode == "UPDATE"
       ? prefillData
@@ -49,9 +50,9 @@ function ProjectForm({ setIsOpen, prefillData, mode, currClient }) {
           className="space-y-5"
           onSubmit={handleSubmit((data) => {
             if (mode == "CREATE") {
-              createRecord(user, projectRoute, data);
+              createRecord(user, createRoute, data);
             } else if (mode == "UPDATE") {
-              updateRecord(user, projectRoute, data);
+              updateRecord(user, updateRoute, data);
             }
             setIsOpen(false);
           })}

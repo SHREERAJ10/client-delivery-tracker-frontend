@@ -5,11 +5,21 @@ import ConfirmDialog from "./ConfirmDialog.jsx";
 import Backdrop from "./Backdrop.jsx";
 import { deleteRecord } from "@/utils/api.js";
 import AuthContext from "@/context/AuthContext.jsx";
+import ProjectForm from "./ProjectForm.jsx";
 
-function ProjectCard({ clientId, id, name, status, status_Detail, deliverable }) {
-  const projectRoute = `/client/${clientId}/project/${id}`;
-  const {user} = useContext(AuthContext);
+function ProjectCard({
+  currClient,
+  id,
+  name,
+  status,
+  status_Detail,
+  deliverable,
+  due_Date
+}) {
+  const projectRoute = `/client/${currClient.id}/project/${id}`;
+  const { user } = useContext(AuthContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const deleteProject = async () => {
     await deleteRecord(user, projectRoute);
@@ -47,7 +57,7 @@ function ProjectCard({ clientId, id, name, status, status_Detail, deliverable })
         </div>
 
         <div className="flex items-start justify-end md:ml-4">
-          <KebabMenu setIsDeleteOpen={setIsDialogOpen} />
+          <KebabMenu setIsDeleteOpen={setIsDialogOpen} setIsUpdateOpen={setIsUpdate} />
         </div>
         {isDialogOpen && (
           <div
@@ -63,6 +73,27 @@ function ProjectCard({ clientId, id, name, status, status_Detail, deliverable })
           </div>
         )}
 
+        {isUpdate && (
+          <div
+            id="modal-wrapper"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          >
+            <Backdrop setIsOpen={setIsDialogOpen} />
+            <ProjectForm
+              mode="UPDATE"
+              id={id}
+              prefillData={{
+                clientId: currClient.id,
+                projectName: name,
+                statusId: status.id,
+                statusDetail: status_Detail,
+                due_Date:due_Date.split('T')[0],
+              }}
+              currClient={currClient}
+              setIsOpen={setIsUpdate}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
