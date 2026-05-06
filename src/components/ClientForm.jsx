@@ -1,19 +1,12 @@
 import { useForm } from "react-hook-form";
-import { createRecord } from "@/utils/api.js";
+import { createRecord, updateRecord } from "@/utils/api.js";
 import { useContext, useEffect } from "react";
 import AuthContext from "@/context/AuthContext.jsx";
 import Input from "./Input.jsx";
 
-const clientRoute = "/client";
-
-export default function ClientForm({
-  setIsOpen,
-  mode,
-  prefillData = {
-    clientName: "",
-    email: "",
-  },
-}) {
+export default function ClientForm({ setIsOpen, mode, prefillData, id }) {
+  const createRoute = `/client`;
+  const updateRoute = `/client/${id}`;
   const initialData =
     mode == "UPDATE"
       ? prefillData
@@ -44,10 +37,13 @@ export default function ClientForm({
         <form
           className="space-y-5"
           onSubmit={handleSubmit((data) => {
-            createRecord(user, clientRoute, data);
+            if (mode == "CREATE") {
+              createRecord(user, createRoute, data);
+            } else if (mode == "UPDATE") {
+              updateRecord(user, updateRoute, data);
+            }
             setIsOpen(false);
-          }
-          )}
+          })}
         >
           <Input
             type="text"

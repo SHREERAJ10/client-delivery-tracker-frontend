@@ -1,7 +1,7 @@
 import ActionBar from "@/components/ActionBar.jsx";
 import Backdrop from "@/components/Backdrop.jsx";
 import ClientForm from "@/components/ClientForm.jsx";
-import ClientsOverview from "@/components/ClientsOverview.jsx";
+import ClientTable from "@/components/ClientTable.jsx";
 import Filter from "@/components/Filter.jsx";
 import ProjectStats from "@/components/ProjectStats.jsx";
 import SearchBar from "@/components/SearchBar.jsx";
@@ -19,7 +19,7 @@ function ClientPage() {
           <Filter />  
         </section>
         <section className="flex justify-between px-7">
-          <ClientsOverview />
+          <ClientTable />
         </section>
         <ProjectStats />
       </div>
