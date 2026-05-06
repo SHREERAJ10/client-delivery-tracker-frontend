@@ -9,6 +9,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import Layout from "./components/Layout.jsx";
 import ClientPage from "./pages/ClientPage.jsx";
 import ProjectPage from "./pages/ProjectPage.jsx";
+import DeliverablePage from "./pages/DeliverablePage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { index: true, Component: Dashboard },
       { path: "client", Component: ClientPage },
       { path: "client/:clientId/project", Component: ProjectPage },
+      { path: "client/:clientId/project/:projectId/deliverable", Component: DeliverablePage },
     ],
   },
   { path: "/login", Component: Login },
