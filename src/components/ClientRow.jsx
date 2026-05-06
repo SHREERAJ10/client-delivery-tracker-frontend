@@ -1,13 +1,23 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Backdrop from "./Backdrop.jsx";
 import ClientForm from "./ClientForm.jsx";
 import KebabMenu from "./KebabMenu.jsx";
 
 import StatCell from "./StatCell.jsx";
 import ProjectForm from "./ProjectForm.jsx";
+import { deleteRecord } from "@/utils/api.js";
+import AuthContext from "@/context/AuthContext.jsx";
+import ConfirmDialog from "./ConfirmDialog.jsx";
 
 function ClientRow({ client, onClick }) {
+  const deleteClientRoute = `/client/${client.id}`;
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { user } = useContext(AuthContext);
+
+  const deleteProject = async () => {
+    await deleteRecord(user, deleteClientRoute);
+  };
 
   return (
     <>
@@ -42,8 +52,21 @@ function ClientRow({ client, onClick }) {
           className="col-start-2 row-start-1 sm:col-auto sm:row-auto justify-self-end"
           onClick={(e) => e.stopPropagation()}
         >
-          <KebabMenu setIsUpdateOpen={setIsFormOpen} />
+          <KebabMenu setIsUpdateOpen={setIsFormOpen} setIsDeleteOpen={setIsDialogOpen} />
         </div>
+        {isDialogOpen && (
+          <div
+            id="modal-wrapper"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          >
+            <Backdrop setIsOpen={setIsDialogOpen} />
+            <ConfirmDialog
+              dialogText="Are you sure you want to delete it?"
+              setIsOpen={setIsDialogOpen}
+              action={deleteProject}
+            />
+          </div>
+        )}
       </div>
       {isFormOpen && (
         <div
