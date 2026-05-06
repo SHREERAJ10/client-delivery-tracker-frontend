@@ -21,7 +21,8 @@ const ConfirmDialog = ({ setIsOpen, dialogText, action }) => {
           Cancel
         </button>
         <button
-          onClick={async () => {
+          onClick={async (e) => {
+            e.stopPropagation();
             await action();
             setIsOpen(false);
           }}
