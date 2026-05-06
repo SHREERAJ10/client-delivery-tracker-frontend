@@ -17,6 +17,8 @@ function ProjectPage() {
   const [projectData, setProjectData] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  const isReady = projectData && clientData;
+
   const currPage = Number(searchParams.get("page") || 1);
 
   const handlePageChange = (newPage) => {
@@ -63,10 +65,15 @@ function ProjectPage() {
           </section>
         </div>
         <section className="px-6 flex flex-col gap-y-8">
-          {console.log(projectData)}
-          {projectData != null && projectData.items.length != 0
+          {isReady && projectData.items.length != 0
             ? projectData.items.map((project) => {
-                return <ProjectCard key={project.id} {...project} currClient={clientData} />;
+                return (
+                  <ProjectCard
+                    key={project.id}
+                    {...project}
+                    currClient={clientData}
+                  />
+                );
               })
             : null}
         </section>
