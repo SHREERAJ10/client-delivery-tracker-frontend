@@ -50,24 +50,23 @@ function ClientRow({ client, onClick }) {
 
         <div
           className="col-start-2 row-start-1 sm:col-auto sm:row-auto justify-self-end"
-          onClick={(e) => e.stopPropagation()}
         >
           <KebabMenu setIsUpdateOpen={setIsFormOpen} setIsDeleteOpen={setIsDialogOpen} />
         </div>
-        {isDialogOpen && (
-          <div
-            id="modal-wrapper"
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          >
-            <Backdrop setIsOpen={setIsDialogOpen} />
-            <ConfirmDialog
-              dialogText="Are you sure you want to delete it?"
-              setIsOpen={setIsDialogOpen}
-              action={deleteProject}
-            />
-          </div>
-        )}
       </div>
+      {isDialogOpen && (
+        <div
+          id="modal-wrapper"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        >
+          <Backdrop setIsOpen={setIsDialogOpen} />
+          <ConfirmDialog
+            dialogText="Are you sure you want to delete it?"
+            setIsOpen={setIsDialogOpen}
+            action={deleteProject}
+          />
+        </div>
+      )}
       {isFormOpen && (
         <div
           id="modal-wrapper"

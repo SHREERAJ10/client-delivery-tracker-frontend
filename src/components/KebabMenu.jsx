@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-function KebabMenu({setIsUpdateOpen, setIsDeleteOpen}) {
+function KebabMenu({ setIsUpdateOpen, setIsDeleteOpen }) {
   return (
     <>
       <DropdownMenu>
@@ -17,11 +17,17 @@ function KebabMenu({setIsUpdateOpen, setIsDeleteOpen}) {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={()=>setIsUpdateOpen(true)}>
+          <DropdownMenuItem onClick={(e) => {
+            e.stopPropagation();
+            setIsUpdateOpen(true);
+          }}>
             <Pencil />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={()=>setIsDeleteOpen(true)}>
+          <DropdownMenuItem onClick={(e) => {
+            e.stopPropagation();
+            setIsDeleteOpen(true);
+          }}>
             <Trash2 />
             Delete
           </DropdownMenuItem>
