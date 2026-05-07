@@ -1,6 +1,6 @@
 import React from "react";
 
-function StatCell({label, highlight, value}) {
+function StatCell({label, highlight, value, children}) {
   return (
     <div className="flex flex-col gap-0.5 sm:items-center">
       
@@ -12,6 +12,7 @@ function StatCell({label, highlight, value}) {
           highlight ? "text-red-600" : "text-gray-700"
         }`}
       >
+        {children}
         {value}
       </span>
     </div>
