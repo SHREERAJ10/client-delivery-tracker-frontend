@@ -7,22 +7,22 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { convertToISOString } from "@/utils/convertToISOString.js";
 
-function DeliverableForm({ mode, prefillData, setIsFormOpen }) {
+function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, clientId, projectId }) {
   const initialData =
     mode == "UPDATE"
       ? prefillData
       : {
-          deliverableName: "",
-          projectId: "",
-          statusId: "",
-          due_Date: "",
-          note: "",
-        };
+        deliverableName: "",
+        projectId: formType == "DEPENDENT" ? projectId : "",
+        statusId: "",
+        due_Date: "",
+        note: "",
+      };
 
   const { register, handleSubmit, control, getValues } = useForm({
     defaultValues: initialData,
   });
-  const [currClientId, setCurrClientId] = useState("");
+  const [currClientId, setCurrClientId] = useState(formType == "DEPENDENT" ? clientId : "");
   const [clients, setClients] = useState([]);
   const [projects, setProjects] = useState([]);
   const [options, setOptions] = useState([]);
@@ -42,18 +42,20 @@ function DeliverableForm({ mode, prefillData, setIsFormOpen }) {
       setStatusArr(statusList);
     })();
   }, []);
-  console.log(projects);
 
   // filter projects based on clientId
   useEffect(() => {
-    const filteredProjects =
-      currClientId == ""
-        ? projects
-        : projects.filter((project) => {
+    if (options.length != 0) {
+      const filteredProjects =
+        currClientId == ""
+          ? projects
+          : projects.filter((project) => {
             return project.clientId == currClientId;
           });
-    setOptions(filteredProjects);
+      setOptions(filteredProjects);
+    }
   }, [currClientId]);
+
 
   return (
     <div className="relative w-full max-w-lg bg-gray-50 rounded-2xl shadow-md p-6 z-10">
@@ -64,13 +66,13 @@ function DeliverableForm({ mode, prefillData, setIsFormOpen }) {
       <form
         className="space-y-5"
         onSubmit={handleSubmit((data) => {
-          console.log(data);
           const projectId = getValues("projectId");
           createRecord(
             user,
             `/client/${currClientId}/project/${projectId}/deliverable`,
             data,
           );
+          setIsFormOpen(false);
         })}
       >
         <div className="flex flex-col">
@@ -78,7 +80,7 @@ function DeliverableForm({ mode, prefillData, setIsFormOpen }) {
             name="clientId"
             defaultValue=""
             value={currClientId}
-            onChange={(e) => setCurrClientId(e.target.value)}
+            onChange={(e) => formType == "DEPENDENT" ? null : setCurrClientId(e.target.value)}
           >
             <option value="">All</option>
             {clients.map((client) => {
@@ -89,21 +91,26 @@ function DeliverableForm({ mode, prefillData, setIsFormOpen }) {
               );
             })}
           </select>
+
           <Controller
             control={control}
             name="projectId"
             render={({ field }) => {
-              console.log(field);
+
               return (
                 <Autocomplete
-                  {...field}
-                  disablePortal
+                  disabled={formType=="DEPENDENT"?true:false}
                   options={options}
-                  value={field.value.id}
-                  onChange={(_, selectedOption) =>
-                    selectedOption ? field.onChange(selectedOption.id) : null
+                  value={options.find((option) => option.id == field.value) || null}
+                  onChange={(_, selectedOption) => {
+                    return formType == "DEPENDENT" ? field.value : field.onChange(selectedOption ? selectedOption.id : null);
+
                   }
-                  getOptionLabel={(option) => option.name}
+                  }
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  getOptionLabel={(option) => {
+                    return option.name
+                  }}
                   getOptionKey={(option) => option.id}
                   sx={{ width: 300 }}
                   renderInput={(params) => (
@@ -156,8 +163,7 @@ function DeliverableForm({ mode, prefillData, setIsFormOpen }) {
             })}
           />
         </div>
-        {console.log(new Date())}
-        {/* Note */}
+
         <div>
           <h2>Notes</h2>
           <textarea
