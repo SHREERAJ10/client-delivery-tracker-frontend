@@ -6,6 +6,7 @@ import StatCell from "./StatCell.jsx";
 import KebabMenu from "./KebabMenu.jsx";
 import { formatDate } from "@/utils/formatDate.js";
 import { DeliverableNote } from "./DeliverableNote.jsx";
+import Backdrop from "./Backdrop.jsx";
 
 function DeliverableRow({ client, project, deliverable, id }) {
   const deleteDeliverableRoute = `/client/${client.id}/project/${project.id}/deliverable/${id}`;
@@ -68,23 +69,31 @@ function DeliverableRow({ client, project, deliverable, id }) {
           </div>
         )}
       </div>
-      {/* {isFormOpen && (
+      {console.log(deliverable)}
+      {isFormOpen && (
         <div
           id="modal-wrapper"
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
         >
           <Backdrop setIsOpen={setIsFormOpen} />
           <DeliverableForm
-            setIsOpen={setIsFormOpen}
+            setIsFormOpen={setIsFormOpen}
             mode="UPDATE"
+            formType="DEPENDENT"
             prefillData={{
-              clientName: client.name,
-              email: client.email,
+              deliverableName: deliverable.name,
+              projectId: project.id,
+              statusId: deliverable.status.id,
+              due_Date: (deliverable.due_Date).split('T')[0],
+              note: deliverable.note,
             }}
-            id={client.id}
+            clientId={client.id}
+            projectId={project.id}
+            id={id}
+            
           />
         </div>
-      )} */}
+      )}
     </>
   );
 }

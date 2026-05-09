@@ -2,12 +2,12 @@ import AuthContext from "@/context/AuthContext.jsx";
 import React, { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Input from "./Input.jsx";
-import { createRecord, getData } from "@/utils/api.js";
+import { createRecord, getData, updateRecord } from "@/utils/api.js";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { convertToISOString } from "@/utils/convertToISOString.js";
 
-function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, clientId, projectId }) {
+function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, clientId, projectId }) {
   const initialData =
     mode == "UPDATE"
       ? prefillData
@@ -43,6 +43,8 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, clientId,
     })();
   }, []);
 
+  console.log(initialData)
+
   // filter projects based on clientId
   useEffect(() => {
     if (options.length != 0) {
@@ -67,11 +69,18 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, clientId,
         className="space-y-5"
         onSubmit={handleSubmit((data) => {
           const projectId = getValues("projectId");
-          createRecord(
-            user,
-            `/client/${currClientId}/project/${projectId}/deliverable`,
-            data,
-          );
+          if (mode == "CREATE") {
+            createRecord(
+              user,
+              `/client/${currClientId}/project/${projectId}/deliverable`,
+              data,
+            );
+          }
+          else if (mode == "UPDATE") {
+            updateRecord(user,
+              `/client/${currClientId}/project/${projectId}/deliverable/${id}`,
+              data,)
+          }
           setIsFormOpen(false);
         })}
       >
@@ -99,7 +108,7 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, clientId,
 
               return (
                 <Autocomplete
-                  disabled={formType=="DEPENDENT"?true:false}
+                  disabled={formType == "DEPENDENT" ? true : false}
                   options={options}
                   value={options.find((option) => option.id == field.value) || null}
                   onChange={(_, selectedOption) => {
@@ -130,21 +139,20 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, clientId,
           required
           placeholder="Enter deliverable name"
         />
-        <select
-          name="statusId"
-          id="statusId"
-          defaultValue=""
-          {...register("statusId", { required: "Select a Status" })}
-        >
-          <option value="">Please Select a Status</option>
-          {statusArr.map((status) => {
-            return (
-              <option value={status.id} key={status.id}>
-                {status.status}
-              </option>
-            );
-          })}
-        </select>
+        {statusArr.length != 0 &&
+          <select
+            name="statusId"
+            {...register("statusId", { required: "Select a Status" })}
+          >
+            <option value="" disabled>Please Select a Status</option>
+            {statusArr.map((status) => {
+              return (
+                <option value={status.id} key={status.id}>
+                  {status.status}
+                </option>
+              );
+            })}
+          </select>}
 
         {/* Due Date */}
         <div className="space-y-1.5">
