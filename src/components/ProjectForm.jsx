@@ -12,12 +12,12 @@ function ProjectForm({ setIsOpen, id, prefillData, mode, currClient }) {
     mode == "UPDATE"
       ? prefillData
       : {
-          projectName: "",
-          clientId: currClient.id,
-          statusId: "",
-          statusDetail: "",
-          due_Date: "",
-        };
+        projectName: "",
+        clientId: currClient.id,
+        statusId: "",
+        statusDetail: "",
+        due_Date: "",
+      };
 
   const { register, handleSubmit } = useForm({
     defaultValues: initialData,
@@ -73,25 +73,25 @@ function ProjectForm({ setIsOpen, id, prefillData, mode, currClient }) {
             required
             placeholder="Enter project name"
           />
-
-          <select
-            name="statusId"
-            id="statusId"
-            defaultValue=""
-            {...register("statusId", { required: "Select a Status" })}
-          >
-            <option value="" disabled>
-              Please Select a Status
-            </option>
-            {statusArr != null &&
-              statusArr.map((status) => {
+          {statusArr != null &&
+            <select
+              name="statusId"
+              id="statusId"
+              defaultValue=""
+              {...register("statusId", { required: "Select a Status" })}
+            >
+              <option value="" disabled>
+                Please Select a Status
+              </option>
+              {statusArr.map((status) => {
                 return (
                   <option value={status.id} key={status.id}>
                     {status.status}
                   </option>
                 );
               })}
-          </select>
+            </select>}
+
 
           <div className="space-y-1.5">
             <label className="block text-sm font-medium text-gray-600">
