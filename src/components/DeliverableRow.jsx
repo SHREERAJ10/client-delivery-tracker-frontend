@@ -7,6 +7,7 @@ import KebabMenu from "./KebabMenu.jsx";
 import { formatDate } from "@/utils/formatDate.js";
 import { DeliverableNote } from "./DeliverableNote.jsx";
 import Backdrop from "./Backdrop.jsx";
+import ConfirmDialog from "./ConfirmDialog.jsx";
 
 function DeliverableRow({ client, project, deliverable, id }) {
   const deleteDeliverableRoute = `/client/${client.id}/project/${project.id}/deliverable/${id}`;
@@ -14,7 +15,7 @@ function DeliverableRow({ client, project, deliverable, id }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { user } = useContext(AuthContext);
 
-  const deleteProject = async () => {
+  const deleteDeliverable = async () => {
     await deleteRecord(user, deleteDeliverableRoute);
   };
 
@@ -64,12 +65,12 @@ function DeliverableRow({ client, project, deliverable, id }) {
             <ConfirmDialog
               dialogText="Are you sure you want to delete it?"
               setIsOpen={setIsDialogOpen}
-              action={deleteProject}
+              action={deleteDeliverable}
             />
           </div>
         )}
       </div>
-      {console.log(deliverable)}
+
       {isFormOpen && (
         <div
           id="modal-wrapper"
