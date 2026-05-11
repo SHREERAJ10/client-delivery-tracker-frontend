@@ -4,16 +4,25 @@ import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Input from "./Input.jsx";
 import { convertToISOString } from "@/utils/convertToISOString.js";
+import { useParams } from "react-router-dom";
 
-function ProjectForm({ setIsOpen, id, prefillData, mode, currClient }) {
-  const createRoute = `/client/${currClient.id}/project`;
-  const updateRoute = `/client/${currClient.id}/project/${id}`;
+function ProjectForm({ mode, setIsOpen, id, prefillData }) {
+  const { clientId } = useParams();
+
+  const createRoute = `/client/${clientId}/project`;
+  const updateRoute = `/client/${clientId}/project/${id}`;
+  
+  const [currClient, setCurrClient] = useState(null);
+  const [statusArr, setStatusArr] = useState(null);
+
+  const { user } = useContext(AuthContext);
+
   const initialData =
     mode == "UPDATE"
       ? prefillData
       : {
         projectName: "",
-        clientId: currClient.id,
+        clientId: clientId,
         statusId: "",
         statusDetail: "",
         due_Date: "",
@@ -22,8 +31,7 @@ function ProjectForm({ setIsOpen, id, prefillData, mode, currClient }) {
   const { register, handleSubmit } = useForm({
     defaultValues: initialData,
   });
-  const { user } = useContext(AuthContext);
-  const [statusArr, setStatusArr] = useState(null);
+  
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -35,7 +43,9 @@ function ProjectForm({ setIsOpen, id, prefillData, mode, currClient }) {
   useEffect(() => {
     (async () => {
       const statusList = await getData(user, "/status/?type=PROJECT");
+      const client = await getData(user, `/client/${clientId}`);
       setStatusArr(statusList);
+      setCurrClient(client);
     })();
   }, []);
 
@@ -57,13 +67,15 @@ function ProjectForm({ setIsOpen, id, prefillData, mode, currClient }) {
             setIsOpen(false);
           })}
         >
-          <select
-            name="clientId"
-            id="clientId"
-            {...register("clientId", { required: true })}
-          >
-            <option value={currClient.id}>{currClient.name}</option>
-          </select>
+          {currClient &&
+            <select
+              name="clientId"
+              id="clientId"
+              {...register("clientId", { required: true })}
+            >
+              <option value={currClient.id}>{currClient.name}</option>
+            </select>
+          }
 
           <Input
             type="text"

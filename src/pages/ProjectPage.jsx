@@ -5,19 +5,18 @@ import { getData } from "@/utils/api.js";
 import { Plus } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import ProjectCard from "@/components/ProjectCard.jsx";
 import ProjectForm from "@/components/ProjectForm.jsx";
 import Backdrop from "@/components/Backdrop.jsx";
+import ProjectList from "@/components/ProjectList.jsx";
 
 function ProjectPage() {
   const { clientId } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useContext(AuthContext);
-  const [clientData, setClientData] = useState(null);
-  const [projectData, setProjectData] = useState(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const isReady = projectData && clientData;
+  const [currClient, setCurrClient] = useState(null);
+  const [projects, setProjects] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const currPage = Number(searchParams.get("page") || 1);
 
@@ -28,7 +27,7 @@ function ProjectPage() {
   useEffect(() => {
     (async () => {
       const client = await getData(user, `/client/${clientId}`);
-      setClientData(client);
+      setCurrClient(client);
     })();
   }, []);
 
@@ -38,7 +37,7 @@ function ProjectPage() {
         user,
         `/client/${clientId}/project/details/?page=${currPage}`,
       );
-      setProjectData(projectDetails);
+      setProjects(projectDetails);
     })();
   }, [searchParams]);
 
@@ -46,7 +45,7 @@ function ProjectPage() {
     <div>
       <div className="w-full h-16 bg-white border-b flex items-center justify-between px-4 md:pr-8 md:pl-4">
         <h2 className="font-primary text-xl font-semibold">
-          {clientData && clientData.name}
+          {currClient && currClient.name}
         </h2>
 
         <button
@@ -64,19 +63,7 @@ function ProjectPage() {
             <Filter />
           </section>
         </div>
-        <section className="px-6 flex flex-col gap-y-8">
-          {isReady && projectData.items.length != 0
-            ? projectData.items.map((project) => {
-                return (
-                  <ProjectCard
-                    key={project.id}
-                    {...project}
-                    currClient={clientData}
-                  />
-                );
-              })
-            : null}
-        </section>
+        <ProjectList projects={projects} />
         <div className="flex justify-around">
           <button
             id="previous"
@@ -92,8 +79,8 @@ function ProjectPage() {
             className="p-4 border border-black"
             onClick={() =>
               handlePageChange(
-                projectData != null &&
-                  projectData.totalCount > currPage * projectData.pageSize
+                projects != null &&
+                  projects.totalCount > currPage * projects.pageSize
                   ? currPage + 1
                   : currPage,
               )
@@ -110,9 +97,8 @@ function ProjectPage() {
         >
           <Backdrop setIsOpen={setIsFormOpen} />
           <ProjectForm
-            setIsOpen={setIsFormOpen}
             mode="CREATE"
-            currClient={clientData}
+            setIsOpen={setIsFormOpen}
           />
         </div>
       )}

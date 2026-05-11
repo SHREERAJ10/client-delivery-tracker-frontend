@@ -6,10 +6,9 @@ import Backdrop from "./Backdrop.jsx";
 import { deleteRecord } from "@/utils/api.js";
 import AuthContext from "@/context/AuthContext.jsx";
 import ProjectForm from "./ProjectForm.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function ProjectCard({
-  currClient,
   id,
   name,
   status,
@@ -17,7 +16,8 @@ function ProjectCard({
   deliverable,
   due_Date,
 }) {
-  const projectRoute = `/client/${currClient.id}/project/${id}`;
+  const {clientId} = useParams();
+  const projectRoute = `/client/${clientId}/project/${id}`;
   const { user } = useContext(AuthContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -29,7 +29,7 @@ function ProjectCard({
 
   return (
     <div>
-      <div className="mx-auto w-[90%] max-w-6xl min-w-[320px] rounded-xl border border-gray-200 bg-white p-6 shadow-sm curosr-pointer" onClick={() => navigate(`/client/${currClient.id}/project/${id}/deliverable`)}>
+      <div className="mx-auto w-[90%] max-w-6xl min-w-[320px] rounded-xl border border-gray-200 bg-white p-6 shadow-sm curosr-pointer" onClick={() => navigate(`/client/${clientId}/project/${id}/deliverable`)}>
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-x-2">
@@ -86,16 +86,15 @@ function ProjectCard({
           <Backdrop setIsOpen={setIsUpdate} />
           <ProjectForm
             mode="UPDATE"
+            setIsOpen={setIsUpdate}
             id={id}
             prefillData={{
-              clientId: currClient.id,
+              clientId: clientId,
               projectName: name,
               statusId: status.id,
               statusDetail: status_Detail,
               due_Date: due_Date.split('T')[0],
             }}
-            currClient={currClient}
-            setIsOpen={setIsUpdate}
           />
         </div>
       )}
