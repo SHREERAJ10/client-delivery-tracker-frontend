@@ -8,9 +8,11 @@ import { formatDate } from "@/utils/formatDate.js";
 import { DeliverableNote } from "./DeliverableNote.jsx";
 import Backdrop from "./Backdrop.jsx";
 import ConfirmDialog from "./ConfirmDialog.jsx";
+import { useParams } from "react-router-dom";
 
-function DeliverableRow({ client, project, deliverable, id }) {
-  const deleteDeliverableRoute = `/client/${client.id}/project/${project.id}/deliverable/${id}`;
+function DeliverableRow({ deliverable, id }) {
+  const { clientId, projectId } = useParams();
+  const deleteDeliverableRoute = `/client/${clientId}/project/${projectId}/deliverable/${id}`;
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { user } = useContext(AuthContext);
@@ -83,15 +85,12 @@ function DeliverableRow({ client, project, deliverable, id }) {
             formType="DEPENDENT"
             prefillData={{
               deliverableName: deliverable.name,
-              projectId: project.id,
+              projectId: projectId,
               statusId: deliverable.status.id,
               due_Date: (deliverable.due_Date).split('T')[0],
               note: deliverable.note,
             }}
-            clientId={client.id}
-            projectId={project.id}
             id={id}
-            
           />
         </div>
       )}

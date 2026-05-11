@@ -1,41 +1,9 @@
-import AuthContext from "@/context/AuthContext.jsx";
-import { getData } from "@/utils/api.js";
-import React, { useContext, useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import React from "react";
 import DeliverableRow from "./DeliverableRow.jsx";
 
-function DeliverableTable({ currProject }) {
-  const { clientId } = useParams();
-  const { user } = useContext(AuthContext);
-  const [currClient, setCurrClient] = useState(null);
-  const [deliverableData, setDeliverableData] = useState(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+function DeliverableTable({ deliverables }) {
 
-  const currPage = Number(searchParams.get("page") || 1);
-  const itemsPerPage = 5;
-  const ready = currClient && deliverableData;
-
-  useEffect(() => {
-    (async () => {
-      const client = await getData(user, `/client/${clientId}`);
-      setCurrClient(client);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const deliverables = await getData(
-        user,
-        `/client/${clientId}/project/${currProject.id}/deliverable`,
-      );
-      setDeliverableData(deliverables);
-    })();
-  }, [searchParams]);
-  console.log(deliverableData);
-
-  const handlePageChange = (newPage) => {
-    setSearchParams({ page: newPage });
-  };
+  if (!deliverables) return null;
 
   return (
     <section className="w-full">
@@ -48,13 +16,11 @@ function DeliverableTable({ currProject }) {
           <span />
         </div>
 
-        {ready && deliverableData?.items?.length ? (
-          deliverableData.items.map((deliverable) => (
+        {deliverables?.items?.length ? (
+          deliverables.items.map((deliverable) => (
             <DeliverableRow
               key={deliverable.id}
               id={deliverable.id}
-              client={currClient}
-              project={currProject}
               deliverable={deliverable}
             />
           ))
@@ -64,31 +30,7 @@ function DeliverableTable({ currProject }) {
           </p>
         )}
       </div>
-      <div className="flex justify-around">
-        <button
-          id="previous"
-          className="p-4 border border-black"
-          onClick={() =>
-            handlePageChange(currPage > 1 ? currPage - 1 : currPage)
-          }
-        >
-          previous
-        </button>
-        <button
-          id="forward"
-          className="p-4 border border-black"
-          onClick={() =>
-            handlePageChange(
-              deliverableData != null &&
-                deliverableData.totalCount > currPage * itemsPerPage
-                ? currPage + 1
-                : currPage,
-            )
-          }
-        >
-          forward
-        </button>
-      </div>
+
     </section>
   );
 }

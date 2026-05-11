@@ -6,8 +6,10 @@ import { createRecord, getData, updateRecord } from "@/utils/api.js";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { convertToISOString } from "@/utils/convertToISOString.js";
+import { useParams } from "react-router-dom";
 
-function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, clientId, projectId }) {
+function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id }) {
+  const {clientId, projectId} = useParams();
   const initialData =
     mode == "UPDATE"
       ? prefillData
