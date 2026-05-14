@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { startTransition, useContext, useState } from "react";
 import { Progress } from "./ui/progress.jsx";
 import KebabMenu from "./KebabMenu.jsx";
 import ConfirmDialog from "./ConfirmDialog.jsx";
@@ -15,16 +15,28 @@ function ProjectCard({
   status_Detail,
   deliverable,
   due_Date,
+  setProjects,
+  setOptimisticProjects,
+  triggerRefetch
 }) {
-  const {clientId} = useParams();
+  const { clientId } = useParams();
   const projectRoute = `/client/${clientId}/project/${id}`;
   const { user } = useContext(AuthContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const navigate = useNavigate();
 
+  const handleDeleteOptimisticProject = (projectId) => {
+    startTransition(() => {
+      setOptimisticProjects({ action: "DELETE", project: { id: projectId } });
+      setProjects((projects) => { return { ...projects, items: projects?.items?.filter((project) => project.id != projectId) } });
+    });
+  }
+
   const deleteProject = async () => {
+    handleDeleteOptimisticProject(id);
     await deleteRecord(user, projectRoute);
+    triggerRefetch();
   };
 
   return (
@@ -47,14 +59,14 @@ function ProjectCard({
             <div className="flex items-center justify-between text-sm font-medium text-gray-700">
               <span>Deliverables</span>
               <div className="flex gap-0.5">
-                <span className="text-gray-900">{deliverable.completed}</span>
+                <span className="text-gray-900">{deliverable?.completed || 0}</span>
                 <span className="text-gray-400">/</span>
-                <span className="text-gray-400">{deliverable.total}</span>
+                <span className="text-gray-400">{deliverable?.total || 0}</span>
               </div>
             </div>
 
             <Progress
-              value={(deliverable.completed / deliverable.total) * 100}
+              value={(deliverable?.completed / deliverable?.total) * 100}
               className="h-2 w-full"
             />
           </div>
@@ -95,6 +107,9 @@ function ProjectCard({
               statusDetail: status_Detail,
               due_Date: due_Date.split('T')[0],
             }}
+            setOptimisticProjects={setOptimisticProjects}
+            setProjects={setProjects}
+            triggerRefetch={triggerRefetch}
           />
         </div>
       )}

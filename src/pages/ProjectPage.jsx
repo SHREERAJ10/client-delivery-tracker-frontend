@@ -3,7 +3,7 @@ import SearchBar from "@/components/SearchBar.jsx";
 import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
 import { Plus } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useOptimistic, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import ProjectForm from "@/components/ProjectForm.jsx";
 import Backdrop from "@/components/Backdrop.jsx";
@@ -15,7 +15,21 @@ function ProjectPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [currClient, setCurrClient] = useState(null);
-  const [projects, setProjects] = useState(null);
+  const [projects, setProjects] = useState({});
+  const [optimisticProjects, setOptimisticProjects] = useOptimistic(projects, (currProjects, action) => {
+    switch (action.type) {
+      case "ADD":
+        return { ...currProjects, items: [...currProjects.items, action.project] };
+      case "UPDATE":
+        return currProjects.items.map((project) => project.id == action.project.id ? action.project : project);
+      case "DELETE":
+        return currProjects.items.filter((project) => project.id != action.project.id);
+      default:
+        return currProjects;
+    }
+  });
+  const [refetchTrigger, setRefetchTrigger] = useState(false);
+
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const currPage = Number(searchParams.get("page") || 1);
@@ -39,7 +53,7 @@ function ProjectPage() {
       );
       setProjects(projectDetails);
     })();
-  }, [searchParams]);
+  }, [searchParams, refetchTrigger]);
 
   return (
     <div>
@@ -63,7 +77,7 @@ function ProjectPage() {
             <Filter />
           </section>
         </div>
-        <ProjectList projects={projects} />
+        <ProjectList projects={optimisticProjects} setOptimisticProjects={setOptimisticProjects} setProjects={setProjects} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
         <div className="flex justify-around">
           <button
             id="previous"
@@ -99,6 +113,9 @@ function ProjectPage() {
           <ProjectForm
             mode="CREATE"
             setIsOpen={setIsFormOpen}
+            setOptimisticProjects={setOptimisticProjects}
+            setProjects={setProjects}
+            triggerRefetch={() => setRefetchTrigger(prev => !prev)}
           />
         </div>
       )}

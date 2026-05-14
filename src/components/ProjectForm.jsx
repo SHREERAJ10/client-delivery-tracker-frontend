@@ -1,17 +1,17 @@
 import AuthContext from "@/context/AuthContext.jsx";
 import { createRecord, getData, updateRecord } from "@/utils/api.js";
-import React, { useContext, useEffect, useState } from "react";
+import React, { startTransition, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Input from "./Input.jsx";
 import { convertToISOString } from "@/utils/convertToISOString.js";
 import { useParams } from "react-router-dom";
 
-function ProjectForm({ mode, setIsOpen, id, prefillData }) {
+function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, setProjects, triggerRefetch }) {
   const { clientId } = useParams();
 
   const createRoute = `/client/${clientId}/project`;
   const updateRoute = `/client/${clientId}/project/${id}`;
-  
+
   const [currClient, setCurrClient] = useState(null);
   const [statusArr, setStatusArr] = useState(null);
 
@@ -31,7 +31,21 @@ function ProjectForm({ mode, setIsOpen, id, prefillData }) {
   const { register, handleSubmit } = useForm({
     defaultValues: initialData,
   });
-  
+
+  const handleAddOptimisticProject = (optimisticProject) => {
+    startTransition(() => {
+      setOptimisticProjects({ action: "ADD", project: optimisticProject });
+      setProjects((projects) => { return { ...projects, items: [...projects.items, optimisticProject] } })
+    });
+  }
+  const handleUpdateOptimisticProject = (optimisticProject) => {
+    startTransition(() => {
+      setOptimisticProjects({ action: "UPDATE", project: optimisticProject });
+      setProjects((projects) => {
+        return { ...projects, items: projects?.items?.map((project) => project.id == optimisticProject.id ? optimisticProject : project) }
+      });
+    });
+  }
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -58,11 +72,25 @@ function ProjectForm({ mode, setIsOpen, id, prefillData }) {
 
         <form
           className="space-y-5"
-          onSubmit={handleSubmit((data) => {
+          onSubmit={handleSubmit(async (data) => {
+            const optimisticProject = {
+              id: id || "temporary",
+              name: data.projectName,
+              status: {
+                status: "Loading...",
+                id: data.statusId
+              },
+              status_Detail: data.statusDetail,
+              due_Date: data.due_Date
+            }
             if (mode == "CREATE") {
-              createRecord(user, createRoute, data);
+              handleAddOptimisticProject(optimisticProject);
+              await createRecord(user, createRoute, data);
+              triggerRefetch();
             } else if (mode == "UPDATE") {
-              updateRecord(user, updateRoute, data);
+              handleUpdateOptimisticProject(optimisticProject);
+              await updateRecord(user, updateRoute, data);
+              triggerRefetch();
             }
             setIsOpen(false);
           })}
