@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { startTransition, useContext, useState } from "react";
 import Backdrop from "./Backdrop.jsx";
 import ClientForm from "./ClientForm.jsx";
 import KebabMenu from "./KebabMenu.jsx";
@@ -9,14 +9,23 @@ import { deleteRecord } from "@/utils/api.js";
 import AuthContext from "@/context/AuthContext.jsx";
 import ConfirmDialog from "./ConfirmDialog.jsx";
 
-function ClientRow({ client, onClick }) {
+function ClientRow({ client, onClick, setClients, setOptimisticClients, triggerRefetch }) {
   const deleteClientRoute = `/client/${client.id}`;
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { user } = useContext(AuthContext);
 
-  const deleteProject = async () => {
+  const handleDeleteOptimisticProject = (clientId) => {
+    startTransition(() => {
+      setOptimisticClients({ action: "DELETE", client: { id: clientId } });
+      setClients((clients) => { return { ...clients, items: clients?.items?.filter((client) => client.id != clientId) } });
+    });
+  }
+
+  const deleteClient = async () => {
+    handleDeleteOptimisticProject(client.id);
     await deleteRecord(user, deleteClientRoute);
+    triggerRefetch();
   };
 
   return (
@@ -35,17 +44,17 @@ function ClientRow({ client, onClick }) {
           {client.name}
         </div>
 
-        <StatCell label="Active Projects" value={client.project.active ?? 0} />
+        <StatCell label="Active Projects" value={client?.project?.active ?? 0} />
 
         <StatCell
           label="Open Deliverables"
-          value={client.deliverable.open ?? 0}
+          value={client?.deliverable?.open ?? 0}
         />
 
         <StatCell
           label="Overdue"
-          value={client.deliverable.overdue ?? 0}
-          highlight={client.deliverable.overdue > 0}
+          value={client?.deliverable?.overdue ?? 0}
+          highlight={client?.deliverable?.overdue > 0}
         />
 
         <div
@@ -63,7 +72,7 @@ function ClientRow({ client, onClick }) {
           <ConfirmDialog
             dialogText="Are you sure you want to delete it?"
             setIsOpen={setIsDialogOpen}
-            action={deleteProject}
+            action={deleteClient}
           />
         </div>
       )}
@@ -81,6 +90,9 @@ function ClientRow({ client, onClick }) {
               email: client.email,
             }}
             id={client.id}
+            setOptimisticClients={setOptimisticClients}
+            setClients={setClients}
+            triggerRefetch={triggerRefetch}
           />
         </div>
       )}

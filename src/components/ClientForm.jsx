@@ -1,24 +1,39 @@
 import { useForm } from "react-hook-form";
 import { createRecord, updateRecord } from "@/utils/api.js";
-import { useContext, useEffect } from "react";
+import { startTransition, useContext, useEffect } from "react";
 import AuthContext from "@/context/AuthContext.jsx";
 import Input from "./Input.jsx";
 
-export default function ClientForm({ setIsOpen, mode, prefillData, id }) {
+export default function ClientForm({ setIsOpen, mode, prefillData, id, setOptimisticClients, setClients, triggerRefetch }) {
   const createRoute = `/client`;
   const updateRoute = `/client/${id}`;
   const initialData =
     mode == "UPDATE"
       ? prefillData
       : {
-          clientName: "",
-          email: "",
-        };
+        clientName: "",
+        email: "",
+      };
 
   const { register, handleSubmit } = useForm({
     defaultValues: initialData,
   });
   const { user } = useContext(AuthContext);
+
+  const handleAddOptimisticClient = (optimisticClient) => {
+    startTransition(() => {
+      setOptimisticClients({ action: "ADD", client: optimisticClient });
+      setClients((clients) => { return { ...clients, items: [optimisticClient, ...clients.items] } })
+    });
+  }
+  const handleUpdateOptimisticClient = (optimisticClient) => {
+    startTransition(() => {
+      setOptimisticClients({ action: "UPDATE", client: optimisticClient });
+      setClients((clients) => {
+        return { ...clients, items: clients?.items?.map((client) => client.id == optimisticClient.id ? optimisticClient : client) }
+      });
+    });
+  }
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -36,13 +51,24 @@ export default function ClientForm({ setIsOpen, mode, prefillData, id }) {
 
         <form
           className="space-y-5"
-          onSubmit={handleSubmit((data) => {
-            if (mode == "CREATE") {
-              createRecord(user, createRoute, data);
-            } else if (mode == "UPDATE") {
-              updateRecord(user, updateRoute, data);
+          onSubmit={handleSubmit(async (data) => {
+            const optimisticClient = {
+              id: id || crypto.randomUUID(),
+              name: data.clientName,
+              email: data.email,
             }
-            setIsOpen(false);
+
+            if (mode == "CREATE") {
+              handleAddOptimisticClient(optimisticClient);
+              setIsOpen(false);
+              await createRecord(user, createRoute, data);
+              triggerRefetch();
+            } else if (mode == "UPDATE") {
+              handleUpdateOptimisticClient(optimisticClient);
+              setIsOpen(false);
+              await updateRecord(user, updateRoute, data);
+              triggerRefetch();
+            }
           })}
         >
           <Input
