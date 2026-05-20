@@ -1,5 +1,6 @@
 import Backdrop from "@/components/Backdrop.jsx";
 import DeliverableForm from "@/components/DeliverableForm.jsx";
+import DeliverableStats from "@/components/DeliverableStats.jsx";
 import DeliverableTable from "@/components/DeliverableTable.jsx";
 import Filter from "@/components/Filter.jsx";
 import SearchBar from "@/components/SearchBar.jsx";
@@ -105,6 +106,7 @@ function DeliverablePage() {
           </button>
         </div>
       </div>
+      <DeliverableStats refetchTrigger={refetchTrigger} />
       {isFormOpen &&
         <div
           id="modal-wrapper"
