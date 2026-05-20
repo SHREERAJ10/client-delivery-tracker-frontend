@@ -1,5 +1,5 @@
 import AuthContext from "@/context/AuthContext.jsx";
-import React, { useContext, useEffect, useState } from "react";
+import React, { startTransition, useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Input from "./Input.jsx";
 import { createRecord, getData, updateRecord } from "@/utils/api.js";
@@ -8,8 +8,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { convertToISOString } from "@/utils/convertToISOString.js";
 import { useParams } from "react-router-dom";
 
-function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id }) {
-  const {clientId, projectId} = useParams();
+function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setOptimisticDeliverables, setDeliverables, triggerRefetch }) {
+  const { clientId, projectId } = useParams();
   const initialData =
     mode == "UPDATE"
       ? prefillData
@@ -32,6 +32,21 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id }) {
 
   const { user } = useContext(AuthContext);
 
+  const handleAddOptimisticDeliverable = (optimisticDeliverable) => {
+    startTransition(() => {
+      setOptimisticDeliverables({ action: "ADD", project: optimisticDeliverable });
+      setDeliverables((deliverables) => { return { ...deliverables, items: [optimisticDeliverable, ...deliverables.items] } })
+    });
+  }
+  const handleUpdateOptimisticDeliverable = (optimisticDeliverable) => {
+    startTransition(() => {
+      setOptimisticDeliverables({ action: "UPDATE", project: optimisticDeliverable });
+      setDeliverables((deliverables) => {
+        return { ...deliverables, items: deliverables?.items?.map((deliverable) => deliverable.id == optimisticDeliverable.id ? optimisticDeliverable : deliverable) }
+      });
+    });
+  }
+
   useEffect(() => {
     (async () => {
       const projectData = await getData(user, "/project");
@@ -44,8 +59,6 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id }) {
       setStatusArr(statusList);
     })();
   }, []);
-
-  console.log(initialData)
 
   // filter projects based on clientId
   useEffect(() => {
@@ -69,21 +82,36 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id }) {
 
       <form
         className="space-y-5"
-        onSubmit={handleSubmit((data) => {
+        onSubmit={handleSubmit(async (data) => {
           const projectId = getValues("projectId");
+          const optimisticDeliverable = {
+            id: id || crypto.randomUUID(),
+            name: data.deliverableName,
+            status: {
+              status: "Loading...",
+              id: data.statusId
+            },
+            due_Date: data.due_Date,
+            note: data.note
+          }
           if (mode == "CREATE") {
-            createRecord(
+            handleAddOptimisticDeliverable(optimisticDeliverable);
+            setIsFormOpen(false);
+            await createRecord(
               user,
               `/client/${currClientId}/project/${projectId}/deliverable`,
               data,
             );
+            triggerRefetch();
           }
           else if (mode == "UPDATE") {
-            updateRecord(user,
+            handleUpdateOptimisticDeliverable(optimisticDeliverable);
+            setIsFormOpen(false);
+            await updateRecord(user,
               `/client/${currClientId}/project/${projectId}/deliverable/${id}`,
-              data,)
+              data,);
+            triggerRefetch();
           }
-          setIsFormOpen(false);
         })}
       >
         <div className="flex flex-col">

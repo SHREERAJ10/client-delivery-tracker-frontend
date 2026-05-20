@@ -6,7 +6,7 @@ import SearchBar from "@/components/SearchBar.jsx";
 import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
 import { Plus } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useOptimistic, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 
 function DeliverablePage() {
@@ -16,7 +16,20 @@ function DeliverablePage() {
   const { user } = useContext(AuthContext);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [deliverables, setDeliverables] = useState(null);
+  const [optimisticDeliverables, setOptimisticDeliverables] = useOptimistic(deliverables, (currDeliverables, action) => {
+    switch (action.type) {
+      case "ADD":
+        return { ...currDeliverables, items: [...currDeliverables.items, action.deliverable] };
+      case "UPDATE":
+        return currDeliverables.items.map((deliverable) => deliverable.id == action.deliverable.id ? action.deliverable : deliverable);
+      case "DELETE":
+        return currDeliverables.items.filter((deliverable) => deliverable.id != action.deliverable.id);
+      default:
+        return currDeliverables;
+    }
+  });
 
+  const [refetchTrigger, setRefetchTrigger] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currPage = Number(searchParams.get("page") || 1);
@@ -41,7 +54,7 @@ function DeliverablePage() {
       );
       setDeliverables(deliverables);
     })();
-  }, [searchParams]);
+  }, [searchParams, refetchTrigger]);
 
   return (
     <div>
@@ -64,7 +77,7 @@ function DeliverablePage() {
           <Filter />
         </section>
         <section className="flex justify-between px-7">
-          <DeliverableTable deliverables={deliverables} />
+          <DeliverableTable deliverables={optimisticDeliverables} setOptimisticDeliverables={setOptimisticDeliverables} setDeliverables={setDeliverables} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
         </section>
         <div className="flex justify-around">
           <button
@@ -98,7 +111,7 @@ function DeliverablePage() {
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
         >
           <Backdrop setIsOpen={setIsFormOpen} />
-          <DeliverableForm mode="CREATE" setIsFormOpen={setIsFormOpen} formType="DEPENDENT" />
+          <DeliverableForm mode="CREATE" setIsFormOpen={setIsFormOpen} formType="DEPENDENT" setDeliverables={setDeliverables} setOptimisticDeliverables={setOptimisticDeliverables} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
         </div>
       }
 

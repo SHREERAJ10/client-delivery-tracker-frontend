@@ -1,7 +1,7 @@
 import React from "react";
 import DeliverableRow from "./DeliverableRow.jsx";
 
-function DeliverableTable({ deliverables }) {
+function DeliverableTable({ deliverables,setDeliverables, setOptimisticDeliverables, triggerRefetch }) {
 
   if (!deliverables) return null;
 
@@ -22,6 +22,9 @@ function DeliverableTable({ deliverables }) {
               key={deliverable.id}
               id={deliverable.id}
               deliverable={deliverable}
+              setOptimisticDeliverables={setOptimisticDeliverables}
+              setDeliverables={setDeliverables}
+              triggerRefetch={triggerRefetch}
             />
           ))
         ) : (

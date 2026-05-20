@@ -1,6 +1,6 @@
 import AuthContext from "@/context/AuthContext.jsx";
 import { deleteRecord } from "@/utils/api.js";
-import React, { useContext, useState } from "react";
+import React, { startTransition, useContext, useState } from "react";
 import DeliverableForm from "./DeliverableForm.jsx";
 import StatCell from "./StatCell.jsx";
 import KebabMenu from "./KebabMenu.jsx";
@@ -10,15 +10,24 @@ import Backdrop from "./Backdrop.jsx";
 import ConfirmDialog from "./ConfirmDialog.jsx";
 import { useParams } from "react-router-dom";
 
-function DeliverableRow({ deliverable, id }) {
+function DeliverableRow({ deliverable, id, setOptimisticDeliverables, setDeliverables,triggerRefetch }) {
   const { clientId, projectId } = useParams();
   const deleteDeliverableRoute = `/client/${clientId}/project/${projectId}/deliverable/${id}`;
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { user } = useContext(AuthContext);
 
+  const handleDeleteOptimisticDeliverable = (deliverableId) => {
+      startTransition(() => {
+        setOptimisticDeliverables({ action: "DELETE", deliverable: { id: deliverableId } });
+        setDeliverables((deliverables) => { return { ...deliverables, items: deliverables?.items?.filter((deliverable) => deliverable.id != deliverableId) } });
+      });
+    }
+
   const deleteDeliverable = async () => {
+    handleDeleteOptimisticDeliverable(id);
     await deleteRecord(user, deleteDeliverableRoute);
+    triggerRefetch();
   };
 
   return (
@@ -91,6 +100,9 @@ function DeliverableRow({ deliverable, id }) {
               note: deliverable.note,
             }}
             id={id}
+            setOptimisticDeliverables={setOptimisticDeliverables}
+            setDeliverables={setDeliverables}
+            triggerRefetch={triggerRefetch}
           />
         </div>
       )}
