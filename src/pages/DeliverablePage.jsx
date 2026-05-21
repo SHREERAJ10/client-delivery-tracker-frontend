@@ -74,7 +74,7 @@ function DeliverablePage() {
       </div>
       <div className="flex flex-col gap-y-4 py-4">
         <section className="flex justify-between gap-4 px-7">
-          <SearchBar placeholder="Search deliverables by name or status" />
+          <SearchBar placeholder="Search deliverables by name or status..." currPage={currPage} setSearchResult={setDeliverables} route={`/client/${clientId}/project/${projectId}/deliverable`} />
           <Filter />
         </section>
         <section className="flex justify-between px-7">
