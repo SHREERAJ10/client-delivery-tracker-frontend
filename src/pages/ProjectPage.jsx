@@ -73,7 +73,7 @@ function ProjectPage() {
       <div className="flex flex-col gap-y-8">
         <div className="flex flex-col gap-y-4 py-4">
           <section className="flex justify-between gap-4 px-7">
-            <SearchBar placeholder="Search projects by name or status..." />
+            <SearchBar placeholder="Search projects by name or status..." currPage={currPage} setSearchResult={setProjects} route={`/client/${clientId}/project/details`} />
             <Filter />
           </section>
         </div>
