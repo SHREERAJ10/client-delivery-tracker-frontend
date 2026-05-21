@@ -10,6 +10,8 @@ import { getData } from "@/utils/api.js";
 import React, { useContext, useEffect, useOptimistic, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
+const clientRoute = "/client/overview";
+
 function ClientPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { user } = useContext(AuthContext);
@@ -53,11 +55,11 @@ function ClientPage() {
 
       <div className="flex flex-col gap-y-4 py-4">
         <section className="flex justify-between gap-4 px-7">
-          <SearchBar placeholder="Search clients by name or email" />
+          <SearchBar placeholder="Search clients by name or email" currPage={currPage} setSearchResult={setClients} route={clientRoute} />
           <Filter />
         </section>
         <section className="flex justify-between px-7">
-          <ClientTable clients={optimisticClients} setClients={setClients} setOptimisticClients={setOptimisticClients} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
+          <ClientTable clients={optimisticClients} setClients={setClients} setOptimisticClients={setOptimisticClients} />
         </section>
         <div className="flex justify-around">
           <button
