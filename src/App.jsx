@@ -10,6 +10,7 @@ import Layout from "./components/Layout.jsx";
 import ClientPage from "./pages/ClientPage.jsx";
 import ProjectPage from "./pages/ProjectPage.jsx";
 import DeliverablePage from "./pages/DeliverablePage.jsx";
+import DeliverablesPage from "./pages/DeliverablesPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: "client", Component: ClientPage },
       { path: "client/:clientId/project", Component: ProjectPage },
       { path: "client/:clientId/project/:projectId/deliverable", Component: DeliverablePage },
+      { path: "/deliverables", Component: DeliverablesPage },
     ],
   },
   { path: "/login", Component: Login },

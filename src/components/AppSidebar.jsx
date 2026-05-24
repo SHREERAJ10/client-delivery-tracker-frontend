@@ -44,17 +44,7 @@ const sidebarItems = [
   {
     label: "Deliverables",
     icon: "ClipboardListIcon",
-    path: "#",
-  },
-  {
-    label: "Reports",
-    icon: "ChartNoAxesCombinedIcon",
-    path: "#",
-  },
-  {
-    label: "Settings",
-    icon: "Settings",
-    path: "#",
+    path: '/deliverables'
   },
 ];
 
