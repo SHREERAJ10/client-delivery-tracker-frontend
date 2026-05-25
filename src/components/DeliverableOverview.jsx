@@ -24,7 +24,7 @@ function DeliverableOverview({ heading, deliverableRoute, type }) {
           View all
         </a>
       </div>
-      <DeliverableOverviewTable deliverables={deliverableData} type={type} />
+      <DeliverableOverviewTable deliverables={deliverableData.items} type={type} />
     </section>
   );
 }

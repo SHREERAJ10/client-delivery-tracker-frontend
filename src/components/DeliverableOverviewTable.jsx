@@ -14,7 +14,6 @@ function DeliverableOverviewTable({ deliverables, type }) {
   return (
     <div className="w-full font-secondary rounded-xl border border-gray-200 overflow-hidden">
 
-      {/* Header — hidden on mobile */}
       <div className="hidden sm:grid sm:grid-cols-[1.5fr_1.5fr_2fr_1fr_1fr] bg-gray-50 px-4 py-3 text-sm text-gray-500">
         <span>Client</span>
         <span>Project</span>
@@ -23,8 +22,8 @@ function DeliverableOverviewTable({ deliverables, type }) {
         <span>Status</span>
       </div>
 
-      {deliverables.length !== 0 ? (
-        deliverables.map((item, index) => (
+      {deliverables?.length !== 0 ? (
+        deliverables?.map((item, index) => (
           <DeliverableOverviewRow key={index} item={item} formatDate={formatDate} />
         ))
       ) : (
