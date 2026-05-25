@@ -32,8 +32,11 @@ function ProjectPage() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const currPage = Number(searchParams.get("page") || 1);
+  const [statusList, setStatusList] = useState([]);
+  const [currStatus, setCurrStatus] = useState("");
 
+  const currPage = Number(searchParams.get("page") || 1);
+  const statusFilter = searchParams.get("status");
   const handlePageChange = (newPage) => {
     setSearchParams({ page: newPage });
   };
@@ -41,7 +44,9 @@ function ProjectPage() {
   useEffect(() => {
     (async () => {
       const client = await getData(user, `/client/${clientId}`);
+      const statusList = await getData(user, "/status/?type=PROJECT");
       setCurrClient(client);
+      setStatusList(statusList);
     })();
   }, []);
 
@@ -49,7 +54,7 @@ function ProjectPage() {
     (async () => {
       const projectDetails = await getData(
         user,
-        `/client/${clientId}/project/details/?page=${currPage}`,
+        `/client/${clientId}/project/details/?page=${currPage}${(statusFilter == null) ? "" : `&status=${statusFilter}`}`,
       );
       setProjects(projectDetails);
     })();
@@ -74,7 +79,16 @@ function ProjectPage() {
         <div className="flex flex-col gap-y-4 py-4">
           <section className="flex justify-between gap-4 px-7">
             <SearchBar placeholder="Search projects by name or status..." currPage={currPage} setSearchResult={setProjects} route={`/client/${clientId}/project/details`} />
-            <Filter />
+            <Filter options={statusList} value={currStatus} onChange={(value) => {
+              if (value != "") {
+                setCurrStatus(value);
+                setSearchParams({ status: value });
+              }
+              else {
+                searchParams.delete("status");
+                setSearchParams(searchParams);
+              }
+            }} />
           </section>
         </div>
         <ProjectList projects={optimisticProjects} setOptimisticProjects={setOptimisticProjects} setProjects={setProjects} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
