@@ -7,12 +7,12 @@ import { useState } from "react";
 
 const DELIVERABLE_OVERVIEW_DATA = [
   {
-    type: "Overdue",
+    type: "overdue",
     heading: "Overdue Deliverables",
     route: "/dashboard/deliverables?type=overdue&pageSize=3",
   },
   {
-    type: "Upcoming",
+    type: "upcoming",
     heading: "Upcoming Deliverables (Next 7 Days)",
     route: "/dashboard/deliverables?type=upcoming&pageSize=3",
   },
@@ -45,13 +45,6 @@ function Dashboard() {
           <Backdrop setIsOpen={setIsFormOpen} />
           <DeliverableForm
             mode="CREATE"
-            prefillData={{
-              deliverableName: "Abc",
-              projectId: "67",
-              statusId: "123",
-              due_Date: "2026-05-12",
-              note: "",
-            }}
             setIsFormOpen={setIsFormOpen}
           />
         </div>
