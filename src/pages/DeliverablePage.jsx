@@ -32,8 +32,11 @@ function DeliverablePage() {
 
   const [refetchTrigger, setRefetchTrigger] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [statusList, setStatusList] = useState([]);
+  const [currStatus, setCurrStatus] = useState("");
 
   const currPage = Number(searchParams.get("page") || 1);
+  const statusFilter = searchParams.get("status");
   const itemsPerPage = 5;
 
   const handlePageChange = (newPage) => {
@@ -43,7 +46,9 @@ function DeliverablePage() {
   useEffect(() => {
     (async () => {
       const project = await getData(user, `/project/${projectId}`);
+      const statusList = await getData(user, "/status/?type=DELIVERABLE");
       setCurrProject(project);
+      setStatusList(statusList);
     })();
   }, []);
 
@@ -51,7 +56,7 @@ function DeliverablePage() {
     (async () => {
       const deliverables = await getData(
         user,
-        `/client/${clientId}/project/${projectId}/deliverable/?page=${currPage}`,
+        `/client/${clientId}/project/${projectId}/deliverable/?page=${currPage}${(statusFilter == "" || statusFilter == null) ? "" : `&status=${statusFilter}`}`,
       );
       setDeliverables(deliverables);
     })();
@@ -75,7 +80,10 @@ function DeliverablePage() {
       <div className="flex flex-col gap-y-4 py-4">
         <section className="flex justify-between gap-4 px-7">
           <SearchBar placeholder="Search deliverables by name or status..." currPage={currPage} setSearchResult={setDeliverables} route={`/client/${clientId}/project/${projectId}/deliverable`} />
-          <Filter />
+          <Filter options={statusList} value={currStatus} onChange={(value) => {
+            setCurrStatus(value);
+            setSearchParams({ status: value });
+          }} />
         </section>
         <section className="flex justify-between px-7">
           <DeliverableTable deliverables={optimisticDeliverables} setOptimisticDeliverables={setOptimisticDeliverables} setDeliverables={setDeliverables} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
