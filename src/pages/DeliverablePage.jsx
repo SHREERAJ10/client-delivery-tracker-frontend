@@ -40,7 +40,9 @@ function DeliverablePage() {
   const itemsPerPage = 5;
 
   const handlePageChange = (newPage) => {
-    setSearchParams({ page: newPage });
+    const params = new URLSearchParams(searchParams);
+    params.set("page", newPage);
+    setSearchParams(params);
   };
 
   useEffect(() => {

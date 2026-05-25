@@ -38,7 +38,9 @@ function ProjectPage() {
   const currPage = Number(searchParams.get("page") || 1);
   const statusFilter = searchParams.get("status");
   const handlePageChange = (newPage) => {
-    setSearchParams({ page: newPage });
+    const params = new URLSearchParams(searchParams);
+    params.set("page", newPage);
+    setSearchParams(params);
   };
 
   useEffect(() => {

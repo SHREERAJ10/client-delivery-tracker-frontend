@@ -22,10 +22,10 @@ function DeliverablesPage() {
     const { user } = useContext(AuthContext);
     const [deliverables, setDeliverables] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
-    const [deliverableType, setDeliverableType] = useState("");
+    const type = searchParams.get('type');
+    const [deliverableType, setDeliverableType] = useState(type);
     const currPage = Number(searchParams.get("page") || 1);
     const itemsPerPage = 10;
-    const type = searchParams.get('type');
 
     useEffect(() => {
         (async () => {
@@ -35,7 +35,9 @@ function DeliverablesPage() {
     }, [searchParams]);
 
     const handlePageChange = (newPage) => {
-        setSearchParams({ page: newPage });
+        const params = new URLSearchParams(searchParams);
+        params.set("page", newPage);
+        setSearchParams(params);
     };
 
     return (
