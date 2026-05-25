@@ -80,8 +80,8 @@ function ProjectPage() {
           <section className="flex justify-between gap-4 px-7">
             <SearchBar placeholder="Search projects by name or status..." currPage={currPage} setSearchResult={setProjects} route={`/client/${clientId}/project/details`} />
             <Filter options={statusList} value={currStatus} onChange={(value) => {
+              setCurrStatus(value);
               if (value != "") {
-                setCurrStatus(value);
                 setSearchParams({ status: value });
               }
               else {

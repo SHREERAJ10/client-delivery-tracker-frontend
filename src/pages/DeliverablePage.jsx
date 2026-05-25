@@ -56,7 +56,7 @@ function DeliverablePage() {
     (async () => {
       const deliverables = await getData(
         user,
-        `/client/${clientId}/project/${projectId}/deliverable/?page=${currPage}${(statusFilter == "" || statusFilter == null) ? "" : `&status=${statusFilter}`}`,
+        `/client/${clientId}/project/${projectId}/deliverable/?page=${currPage}${(statusFilter == null) ? "" : `&status=${statusFilter}`}`,
       );
       setDeliverables(deliverables);
     })();
@@ -82,7 +82,13 @@ function DeliverablePage() {
           <SearchBar placeholder="Search deliverables by name or status..." currPage={currPage} setSearchResult={setDeliverables} route={`/client/${clientId}/project/${projectId}/deliverable`} />
           <Filter options={statusList} value={currStatus} onChange={(value) => {
             setCurrStatus(value);
-            setSearchParams({ status: value });
+            if (value != "") {
+              setSearchParams({ status: value });
+            }
+            else {
+              searchParams.delete("status");
+              setSearchParams(searchParams);
+            }
           }} />
         </section>
         <section className="flex justify-between px-7">
