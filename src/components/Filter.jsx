@@ -11,10 +11,10 @@ function Filter({ options = [], value, onChange }) {
         onChange={(e) => onChange(e.target.value)}
         className="bg-transparent outline-none text-sm font-secondary appearance-none"
       >
-        <option value="">Filter</option>
-        {options.map((opt, i) => (
-          <option key={i} value={opt.value}>
-            {opt.label}
+        <option value="">All</option>
+        {options.map((opt) => (
+          <option key={opt.id} value={opt.status}>
+            {opt.status}
           </option>
         ))}
       </select>
