@@ -8,7 +8,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { convertToISOString } from "@/utils/convertToISOString.js";
 import { useParams } from "react-router-dom";
 
-function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setOptimisticDeliverables, setDeliverables, triggerRefetch }) {
+function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setOptimisticDeliverables, setDeliverables, triggerRefetch = () => { } }) {
   const { clientId, projectId } = useParams();
   const initialData =
     mode == "UPDATE"
@@ -95,7 +95,9 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setOp
             note: data.note
           }
           if (mode == "CREATE") {
-            handleAddOptimisticDeliverable(optimisticDeliverable);
+            if (formType != "DEPENDENT") {
+              handleAddOptimisticDeliverable(optimisticDeliverable);
+            }
             setIsFormOpen(false);
             await createRecord(
               user,
