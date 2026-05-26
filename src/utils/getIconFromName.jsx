@@ -12,10 +12,10 @@ import {
 function getIconFromName(
   icon,
   className = "",
-  iconConfig = {size:20, strokeWidth:2, color:"#7C7C7C"},
+  iconConfig = { size: 20, strokeWidth: 2, color: "#7C7C7C" },
 ) {
 
-    const {size, strokeWidth, color} = iconConfig;
+  const { size, strokeWidth, color } = iconConfig;
 
   switch (icon) {
     case "UserRound":
@@ -25,11 +25,11 @@ function getIconFromName(
     case "Mail":
       return <Mail size={size} strokeWidth={strokeWidth} color={color} />;
     case "LayoutDashboard":
-      return <LayoutDashboard size={size} strokeWidth={strokeWidth} color={color} className={className} />;
+      return <LayoutDashboard size={size} strokeWidth={strokeWidth} color="#444444" className={className} />;
     case "UsersIcon":
-      return <UsersIcon size={size} strokeWidth={strokeWidth} color={color} className={className} />;
+      return <UsersIcon size={size} strokeWidth={strokeWidth} color="#444444" className={className} />;
     case "ClipboardListIcon":
-      return <ClipboardListIcon size={size} strokeWidth={strokeWidth} color={color} className={className} />;
+      return <ClipboardListIcon size={size} strokeWidth={strokeWidth} color="#444444" className={className} />;
     case "ChartNoAxesCombinedIcon":
       return <ChartNoAxesCombinedIcon size={32} strokeWidth={strokeWidth} color={color} className={className} />;
     case "Settings":

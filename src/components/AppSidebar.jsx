@@ -1,4 +1,4 @@
-import { Rocket, User, User2 } from "lucide-react";
+import { Briefcase, Github, Rocket, User, User2 } from "lucide-react";
 
 import {
   Sidebar,
@@ -50,28 +50,28 @@ const sidebarItems = [
 
 export const AppSidebar = () => {
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader>
+    <Sidebar collapsible="icon" className="px-2">
+      <SidebarHeader className="py-6">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton>
               <Rocket className="w-6! h-6!" />
-              <h1 className="font-primary text-xl font-bold">Agency Flow</h1>
+              <h1 className="font-primary text-xl font-bold uppercase">Agency Flow</h1>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="mt-6">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-y-2">
+            <SidebarMenu className="gap-y-3">
               {sidebarItems.slice(0, 4).map((item, index) => {
                 return (
                   <SidebarMenuItem key={index}>
                     <SidebarMenuButton asChild size={32}>
-                      <NavLink to={item.path}>
+                      <NavLink to={item.path} className="gap-x-2.5">
                         {getIconFromName(item.icon, "!w-5 !h-5")}
-                        <span className="font-primary font-semibold text-base text-[#222222]">
+                        <span className="uppercase tracking-wider text-sm font-semibold text-[#444444]">
                           {item.label}
                         </span>
                       </NavLink>
@@ -89,27 +89,21 @@ export const AppSidebar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 className="w-5! h-5!" />
-                  <span className="font-primary font-semibold text-base text-[#222222]">
+                  <User2 className="w-5! h-5! text-[#111111]" />
+                  <span className="font-bold tracking-tight text-base text-[#111111]">
                     Admin
                   </span>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <UserIcon />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCardIcon />
-                  Billing
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <SettingsIcon />
-                  Settings
-                </DropdownMenuItem>
+                <a href="https://github.com/SHREERAJ10" target="_blank">
+                  <DropdownMenuItem>
+                    <Briefcase />
+                    Portfolio
+                  </DropdownMenuItem>
+                </a>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive" onClick={logout}>
+                <DropdownMenuItem onClick={logout}>
                   <LogOutIcon />
                   Log out
                 </DropdownMenuItem>
