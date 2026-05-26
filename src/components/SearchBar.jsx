@@ -27,15 +27,14 @@ function SearchBar({ placeholder, currPage, setSearchResult, route }) {
 
 
   return (
-    <div className="relative w-full">
-
+    <div className="flex items-center w-full bg-white border border-gray-300 focus-within:ring-1 focus-within:ring-black-500">
       <input
         type="text"
         placeholder={placeholder}
-        className="bg-white w-full px-4 py-2 pr-10 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="peer flex-1 px-4 py-2.5 text-sm bg-transparent focus:outline-none"
         value={searchTerm}
         onChange={(e) => {
-          if ((e.target.value)?.trim() == "") {
+          if (e.target.value?.trim() == "") {
             searchParams.delete("searchQuery");
             setSearchParams(searchParams);
           }
@@ -47,20 +46,20 @@ function SearchBar({ placeholder, currPage, setSearchResult, route }) {
               setSearchParams({ searchQuery: searchTerm });
             }
           }
-        }
-        }
+        }}
       />
 
-      <Search
-        size={16}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+      <button
+        type="button"
         onClick={() => {
           if (searchTerm?.trim() != "") {
             setSearchParams({ searchQuery: searchTerm });
           }
         }}
-      />
-
+        className="flex items-center justify-center px-3 text-gray-500 peer-focus:text-gray-900"
+      >
+        <Search size={16} />
+      </button>
     </div>
   );
 }
