@@ -9,8 +9,8 @@ function DeliverableOverviewRow({ item, formatDate }) {
         className="
         border border-gray-200 bg-white p-5 mb-4 flex flex-col gap-3 rounded-none shadow-sm
         
-        sm:grid sm:grid-cols-[1.5fr_1.5fr_1.5fr_1fr_1fr] sm:gap-y-0 sm:items-center
-        sm:border-t sm:border-x-0 sm:border-b-0 sm:p-0 sm:px-4 sm:py-3 sm:mb-0 sm:shadow-none
+        md:grid md:grid-cols-[1.5fr_1.5fr_1.5fr_1fr_1fr] md:gap-y-0 md:items-center
+        md:border-t md:border-x-0 md:border-b-0 md:p-0 md:px-4 md:py-3 md:mb-0 md:shadow-none
         hover:bg-gray-50 transition-colors
       "
       >
@@ -25,7 +25,9 @@ function DeliverableOverviewRow({ item, formatDate }) {
           </spanc>
         </DeliverableOverviewCell>
         <DeliverableOverviewCell label="Deliverable Name">
-          {item.name}
+          <span className="font-medium">
+            {item.name}
+          </span>
         </DeliverableOverviewCell>
         <DeliverableOverviewCell label="Due Date">
           <span className="font-bold">
