@@ -2,7 +2,7 @@ import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
 import { useContext, useEffect, useState } from "react";
 
-function  MetricsGrid() {
+function MetricsGrid() {
   const { user } = useContext(AuthContext);
   const [metrics, setMetrics] = useState([]);
 
@@ -14,23 +14,32 @@ function  MetricsGrid() {
   }, []);
 
   return (
-    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 font-primary">
 
       {metrics.slice(0, 3).map((item) => (
-        <div key={item.key} className="bg-white border rounded-lg p-4">
-          <p className="text-sm text-gray-500 font-semibold font-primary">{item.label}</p>
-          <p className="font-semibold text-xl">{item.value}</p>
+        <div key={item.key} className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-none shadow-sm flex flex-col justify-center items-start pl-4 md:pl-8 py-10">
+          <span className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-widest">
+            {item.label}
+          </span>
+          <span className="text-5xl font-extrabold text-black dark:text-white tracking-tight mt-4">
+            {item.value}
+          </span>
         </div>
       ))}
 
       {metrics.length > 0 && (
-        <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-4">
-          <p className="text-sm text-red-500 font-semibold font-primary">
+        <div className="bg-white dark:bg-black pl-4 md:pl-8 border-2 border-black dark:border-gray-800 flex flex-col justify-center rounded-none shadow-sm">
+          <span className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-widest block mb-4">
             {metrics[metrics.length - 1].label}
-          </p>
-          <p className="font-semibold text-xl text-red-600">
-            {metrics[metrics.length - 1].value}
-          </p>
+          </span>
+          <div className="flex flex-col items-start gap-1">
+            <span className="text-5xl font-bold text-black dark:text-white tracking-tight">
+              {metrics[metrics.length - 1].value}
+            </span>
+            {metrics[metrics.length - 1].value > 1 && <span class="text-xs text-white bg-black px-2 py-2 font-bold tracking-widest uppercase">ACTION REQUIRED</span>}
+
+          </div>
+
         </div>
       )}
     </div>

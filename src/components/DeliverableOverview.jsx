@@ -17,11 +17,11 @@ function DeliverableOverview({ heading, deliverableRoute, type }) {
 
   return (
     <section className="w-full">
-      <div className="flex justify-between">
-        <h2 className="font-primary text-[#313131] font-semibold text-base lg:text-xl mb-4">
+      <div className="flex justify-between border-b border-black mb-6">
+        <h2 className="text-black font-bold text-base lg:text-xl mb-4 uppercase">
           {heading}
         </h2>
-        <NavLink to={`/deliverables/?type=${type}`} className="text-blue-500 font-secondary text-sm lg:text-base font-semibold hover:underline">
+        <NavLink to={`/deliverables/?type=${type}`} className="text-black font-secondary text-sm font-semibold hover:underline uppercase">
           View all
         </NavLink>
       </div>

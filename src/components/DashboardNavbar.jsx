@@ -9,19 +9,19 @@ export default function DashboardNavbar({ setIsFormOpen }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   return (
-    <nav className="w-full h-16 bg-white border-b flex items-center justify-between px-4 md:pr-8 md:pl-4">
+    <nav className="w-full h-16 bg-white border-b flex items-center justify-between px-4 md:px-8">
 
       <div className="flex items-center gap-3">
-        <SidebarTrigger />
-        <div className="text-xl font-semibold text-gray-800">Dashboard</div>
+        <SidebarTrigger className="lg:hidden" />
+        <div className="text-2xl font-bold">Delivery Dashboard</div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-5">
         <div className="relative w-full hidden lg:block max-w-sm">
           <input
             type="text"
             placeholder="Search Deliveries"
-            className="w-full pl-4 pr-10 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-4 pr-10 py-2 border border-gray-300 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-black-500"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={(e) => {
@@ -41,9 +41,9 @@ export default function DashboardNavbar({ setIsFormOpen }) {
           />
         </div>
 
-        <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition" onClick={() => setIsFormOpen(true)}>
-          <Plus size={16} />
-          <span className="hidden sm:inline">New Delivery</span>
+        <button className="flex items-center justify-between gap-2 bg-black text-white p-4 sm:pl-2 sm:pr-4 py-2 text-sm hover:brightness-110 transition whitespace-nowrap" onClick={() => setIsFormOpen(true)}>
+          <Plus size={20} />
+          <span className="hidden sm:inline text-sm font-semibold">New Delivery</span>
         </button>
       </div>
     </nav>
