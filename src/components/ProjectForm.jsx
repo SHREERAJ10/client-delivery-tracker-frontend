@@ -1,10 +1,11 @@
 import AuthContext from "@/context/AuthContext.jsx";
 import { createRecord, getData, updateRecord } from "@/utils/api.js";
 import React, { startTransition, useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import Input from "./Input.jsx";
 import { convertToISOString } from "@/utils/convertToISOString.js";
 import { useParams } from "react-router-dom";
+import Button from "./Button.jsx";
 
 function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, setProjects, triggerRefetch }) {
   const { clientId } = useParams();
@@ -13,7 +14,7 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
   const updateRoute = `/client/${clientId}/project/${id}`;
 
   const [currClient, setCurrClient] = useState(null);
-  const [statusArr, setStatusArr] = useState(null);
+  const [statusArr, setStatusArr] = useState([]);
 
   const { user } = useContext(AuthContext);
 
@@ -28,7 +29,7 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
         due_Date: "",
       };
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, control } = useForm({
     defaultValues: initialData,
   });
 
@@ -65,8 +66,8 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
 
   return (
     <div className="relative w-full max-w-md z-10 flex items-center justify-center">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-6">
+      <div className="w-full max-w-md bg-white shadow-md p-6">
+        <h2 className="text-2xl font-semibold text-[#111] mb-6">
           {mode == "UPDATE" ? "Update" : "Add"} Project
         </h2>
 
@@ -100,6 +101,7 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
               name="clientId"
               id="clientId"
               {...register("clientId", { required: true })}
+              className="outline outline-gray-300 bg-white p-2 focus:outline-[#111] w-full"
             >
               <option value={currClient.id}>{currClient.name}</option>
             </select>
@@ -113,25 +115,29 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
             required
             placeholder="Enter project name"
           />
-          {statusArr != null &&
-            <select
-              name="statusId"
-              id="statusId"
-              defaultValue=""
-              {...register("statusId", { required: "Select a Status" })}
-            >
-              <option value="" disabled>
-                Please Select a Status
-              </option>
-              {statusArr.map((status) => {
-                return (
-                  <option value={status.id} key={status.id}>
-                    {status.status}
-                  </option>
-                );
-              })}
-            </select>}
 
+
+          <Controller
+            name="statusId"
+            control={control}
+            render={({ field }) => (
+              <select
+                {...field} disabled={statusArr.length === 0}
+                className="outline outline-gray-300 bg-white p-2 focus:outline-[#111] w-full"
+              >
+                <option value="" disabled>
+                  Please Select a Status
+                </option>
+                {statusArr.map((status) => {
+                  return (
+                    <option value={status.id} key={status.id}>
+                      {status.status}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
+          />
 
           <div className="space-y-1.5">
             <label className="block text-sm font-medium text-gray-600">
@@ -140,8 +146,7 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
             <input
               type="date"
               name="due_Date"
-              className="w-full px-3 py-2.5 text-sm bg-white border border-gray-300 rounded-xl shadow-sm outline-none transition
-                                   focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full px-3 py-2.5 text-sm bg-white border border-gray-300 outline-none transition focus-within:ring-1 focus-within:ring-black-500"
               {...register("due_Date", {
                 setValueAs: (value) =>
                   value != "" ? convertToISOString(value) : null,
@@ -150,34 +155,34 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
             />
           </div>
 
-          <div>
-            <h2>Status Details</h2>
+          <div className="flex flex-col gap-1">
+            <h2>Status Detail</h2>
             <textarea
               name="statusDetail"
-              placeholder="Status Details"
+              placeholder="Status Detail"
               {...register("statusDetail", {
                 required: true,
                 minLength: 1,
                 maxLength: 100,
               })}
+              className="w-full p-1 outline outline-gray-300 focus:outline-[#111]"
+              rows="4"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              className="px-4 py-2 text-sm rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+            <Button
+              variant="outline"
               onClick={() => setIsOpen(false)}
             >
               Cancel
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="submit"
-              className="px-4 py-2 text-sm rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
             >
               {mode == "UPDATE" ? "Save" : "Add"} Project
-            </button>
+            </Button>
           </div>
         </form>
       </div>

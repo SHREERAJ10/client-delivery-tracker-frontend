@@ -3,6 +3,7 @@ import { createRecord, updateRecord } from "@/utils/api.js";
 import { startTransition, useContext, useEffect } from "react";
 import AuthContext from "@/context/AuthContext.jsx";
 import Input from "./Input.jsx";
+import Button from "./Button.jsx";
 
 export default function ClientForm({ setIsOpen, mode, prefillData, id, setOptimisticClients, setClients, triggerRefetch }) {
   const createRoute = `/client`;
@@ -44,8 +45,8 @@ export default function ClientForm({ setIsOpen, mode, prefillData, id, setOptimi
 
   return (
     <div className="relative w-full max-w-md z-10 flex items-center justify-center">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-6">
+      <div className="w-full max-w-md bg-white shadow-md p-6">
+        <h2 className="text-2xl font-semibold text-[#111] mb-6">
           {mode == "UPDATE" ? "Update" : "Add"} Client
         </h2>
 
@@ -90,20 +91,18 @@ export default function ClientForm({ setIsOpen, mode, prefillData, id, setOptimi
           />
 
           <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              className="px-4 py-2 text-sm rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+            <Button
+              variant="outline"
               onClick={() => setIsOpen(false)}
             >
               Cancel
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="submit"
-              className="px-4 py-2 text-sm rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition"
             >
               Save Client
-            </button>
+            </Button>
           </div>
         </form>
       </div>
