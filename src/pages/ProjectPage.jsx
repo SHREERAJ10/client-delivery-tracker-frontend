@@ -4,10 +4,18 @@ import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
 import { Plus } from "lucide-react";
 import React, { useContext, useEffect, useOptimistic, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { NavLink, useParams, useSearchParams } from "react-router-dom";
 import ProjectForm from "@/components/ProjectForm.jsx";
 import Backdrop from "@/components/Backdrop.jsx";
 import ProjectList from "@/components/ProjectList.jsx";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 
 function ProjectPage() {
   const { clientId } = useParams();
@@ -63,50 +71,70 @@ function ProjectPage() {
   }, [searchParams, refetchTrigger]);
 
   return (
-    <div>
-      <div className="w-full h-16 bg-white border-b flex items-center justify-between px-4 md:pr-8 md:pl-4">
-        <h2 className="font-primary text-xl font-semibold">
-          {currClient && currClient.name}
-        </h2>
+    <div className="flex flex-col gap-18 sm:gap-8 px-4 sm:px-10 pt-10 pb-6">
+      <div className="flex flex-col">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <NavLink to="/client" className="uppercase font-semibold tracking-wide">
+                  Client
+                </NavLink>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="uppercase font-semibold tracking-wide">{currClient ? currClient.name : "Project"}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <section className="w-full h-16 bg-white flex flex-col items-start gap-y-4 sm:flex-row sm:items-center justify-between">
+          <h2 className="font-primary text-3xl font-extrabold">
+            {currClient ? currClient.name : "Project"}
+          </h2>
 
-        <button
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-          onClick={() => setIsFormOpen(true)}
-        >
-          <Plus size={18} />
-          Add Project
-        </button>
+          <button
+            className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 hover:brightness-110 transition"
+            onClick={() => setIsFormOpen(true)}
+          >
+            <Plus size={18} />
+            Add Project
+          </button>
+        </section>
       </div>
-      <div className="flex flex-col gap-y-8">
-        <div className="flex flex-col gap-y-4 py-4">
-          <section className="flex justify-between gap-4 px-7">
-            <SearchBar placeholder="Search projects by name or status..." currPage={currPage} setSearchResult={setProjects} route={`/client/${clientId}/project/details`} />
-            <Filter options={statusList} value={currStatus} onChange={(value) => {
-              setCurrStatus(value);
-              if (value != "") {
-                setSearchParams({ status: value });
-              }
-              else {
-                searchParams.delete("status");
-                setSearchParams(searchParams);
-              }
-            }} />
-          </section>
+
+      <div className="flex flex-col gap-y-10">
+
+        <section className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-4">
+          <SearchBar placeholder="Search projects by name or status..." currPage={currPage} setSearchResult={setProjects} route={`/client/${clientId}/project/details`} />
+          <Filter options={statusList} value={currStatus} onChange={(value) => {
+            setCurrStatus(value);
+            if (value != "") {
+              setSearchParams({ status: value });
+            }
+            else {
+              searchParams.delete("status");
+              setSearchParams(searchParams);
+            }
+          }} />
+        </section>
+        <div>
+          <ProjectList projects={optimisticProjects} setOptimisticProjects={setOptimisticProjects} setProjects={setProjects} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
+
         </div>
-        <ProjectList projects={optimisticProjects} setOptimisticProjects={setOptimisticProjects} setProjects={setProjects} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
         <div className="flex justify-around">
           <button
             id="previous"
-            className="p-4 border border-black"
+            className="px-4 py-3 text-sm text-white bg-[#111] border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
             onClick={() =>
               handlePageChange(currPage > 1 ? currPage - 1 : currPage)
             }
           >
-            previous
+            Previous
           </button>
           <button
             id="forward"
-            className="p-4 border border-black"
+            className="px-4 py-3 text-sm text-white bg-[#111] border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
             onClick={() =>
               handlePageChange(
                 projects != null &&
@@ -116,7 +144,7 @@ function ProjectPage() {
               )
             }
           >
-            forward
+            Next
           </button>
         </div>
       </div>

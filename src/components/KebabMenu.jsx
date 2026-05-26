@@ -12,11 +12,11 @@ function KebabMenu({ setIsUpdateOpen, setIsDeleteOpen }) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="rounded-md p-1 hover:bg-gray-100">
+          <button className="p-1 hover:bg-gray-100">
             <EllipsisVertical className="h-5 w-5 text-gray-500" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className="rounded-none">
           <DropdownMenuItem onClick={(e) => {
             e.stopPropagation();
             setIsUpdateOpen(true);

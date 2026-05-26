@@ -7,6 +7,7 @@ import { deleteRecord } from "@/utils/api.js";
 import AuthContext from "@/context/AuthContext.jsx";
 import ProjectForm from "./ProjectForm.jsx";
 import { useNavigate, useParams } from "react-router-dom";
+import Badge from "./Badge.jsx";
 
 function ProjectCard({
   id,
@@ -41,22 +42,22 @@ function ProjectCard({
 
   return (
     <div>
-      <div className="mx-auto w-[90%] max-w-6xl min-w-[320px] rounded-xl border border-gray-200 bg-white p-6 shadow-sm curosr-pointer" onClick={() => navigate(`/client/${clientId}/project/${id}/deliverable`)}>
-        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+      <div className="mx-auto max-w-6xl border border-[#111111] bg-white p-6 shadow-sm curosr-pointer" onClick={() => navigate(`/client/${clientId}/project/${id}/deliverable`)}>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-x-2">
-              <h3 className="text-lg font-semibold text-gray-900">{name}</h3>
-              <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 ring-1 ring-inset ring-blue-700/10">
+              <h3 className="text-lg font-extrabold text-gray-900 lg:whitespace-nowrap">{name}</h3>
+              <Badge>
                 {status.status}
-              </span>
+              </Badge>
             </div>
-            <div className="mt-1">
-              <p className="text-sm text-gray-900 opacity-60">{status_Detail}</p>
+            <div className="mt-2">
+              <p className="text-sm font-medium text-[#111] opacity-70">{status_Detail}</p>
             </div>
           </div>
 
           <div className="flex flex-1 flex-col gap-2">
-            <div className="flex items-center justify-between text-sm font-medium text-gray-700">
+            <div className="flex items-center justify-between text-sm font-semibold text-[#111]">
               <span>Deliverables</span>
               <div className="flex gap-0.5">
                 <span className="text-gray-900">{deliverable?.completed || 0}</span>
@@ -71,7 +72,7 @@ function ProjectCard({
             />
           </div>
 
-          <div className="flex items-start justify-end md:ml-4">
+          <div className="flex items-start justify-end lg:ml-4">
             <KebabMenu setIsDeleteOpen={setIsDialogOpen} setIsUpdateOpen={setIsUpdate} />
           </div>
         </div>

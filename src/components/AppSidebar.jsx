@@ -50,7 +50,7 @@ const sidebarItems = [
 
 export const AppSidebar = () => {
   return (
-    <Sidebar collapsible="icon" className="px-2">
+    <Sidebar collapsible="icon">
       <SidebarHeader className="py-6">
         <SidebarMenu>
           <SidebarMenuItem>
