@@ -33,33 +33,31 @@ function ClientRow({ client, onClick, setClients, setOptimisticClients, triggerR
       <div
         onClick={onClick}
         className="
-        grid cursor-pointer border-t border-gray-200 bg-white px-4 py-3
-        hover:bg-gray-50 transition-colors
+    grid cursor-pointer bg-white px-4 py-3
+    hover:bg-gray-50 transition-colors
 
-        grid-cols-2 gap-y-3
-        sm:grid-cols-[2fr_1fr_1fr_1fr_40px] sm:gap-y-0 sm:items-center
-      "
+    border border-b-2 border-r-4 border-[#111]
+    md:rounded-none md:border-0 md:border-t md:border-gray-200
+
+    grid-cols-2 gap-y-3
+    md:grid-cols-[2fr_1fr_1fr_1fr_40px] md:gap-y-0 md:items-center
+  "
       >
-        <div className="col-span-2 sm:col-span-1 font-medium text-sm text-gray-800">
+        <div className="text-sm font-bold text-[#111]">
           {client.name}
         </div>
 
-        <StatCell label="Active Projects" value={client?.project?.active ?? 0} />
+        <div className="grid grid-cols-3 gap-2 col-span-2 md:contents">
+          <StatCell label="Projects">{client?.project?.active ?? 0}</StatCell>
+          <StatCell label="Deliverables">{client?.deliverable?.open ?? 0}</StatCell>
+          <StatCell label="Overdue">
+            <span className={client?.deliverable?.overdue > 0 ? "font-bold" : ""}>
+              {client?.deliverable?.overdue ?? 0}
+            </span>
+          </StatCell>
+        </div>
 
-        <StatCell
-          label="Open Deliverables"
-          value={client?.deliverable?.open ?? 0}
-        />
-
-        <StatCell
-          label="Overdue"
-          value={client?.deliverable?.overdue ?? 0}
-          highlight={client?.deliverable?.overdue > 0}
-        />
-
-        <div
-          className="col-start-2 row-start-1 sm:col-auto sm:row-auto justify-self-end"
-        >
+        <div className="col-start-2 row-start-1 md:col-auto md:row-auto justify-self-end">
           <KebabMenu setIsUpdateOpen={setIsFormOpen} setIsDeleteOpen={setIsDialogOpen} />
         </div>
       </div>

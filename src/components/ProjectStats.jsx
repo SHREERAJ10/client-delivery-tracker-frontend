@@ -20,19 +20,19 @@ function ProjectStats() {
     })();
   }, []);
   return (
-    <section className="flex flex-col lg:flex-row gap-y-6 justify-between px-7">
+    <section className="flex flex-col lg:flex-row gap-y-6 justify-between">
       {stats.map((stat) => {
         return (
           <div
             key={stat.key}
-            className="flex items-center gap-4 px-6 py-3 bg-white rounded-xl shadow-sm border border-gray-100"
+            className="flex items-center gap-4 pr-8 py-3 bg-white shadow-sm border border-b-2 border-r-4 border-[#111]"
           >
-            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600 shrink-0">
+            <div className="flex items-center justify-center w-12 h-12 text-[#111] shrink-0">
               {icons[stat.key]}
             </div>
 
             <div className="flex flex-col leading-tight">
-              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              <h3 className="text-xs font-medium text-gray-800 uppercase tracking-wide">
                 {stat.label}
               </h3>
 

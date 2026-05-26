@@ -1,17 +1,18 @@
 import { Plus } from "lucide-react";
+import Button from "./Button.jsx";
 
-function ActionBar({setIsFormOpen}) {
+function ActionBar({ setIsFormOpen }) {
   return (
-    <div className="w-full h-16 bg-white border-b flex items-center justify-between px-4 md:pr-8 md:pl-4">
-      
-      <h2 className="font-primary text-xl font-semibold">
+    <div className="w-full flex items-center justify-between px-4 md:px-8">
+
+      <h2 className="text-3xl font-bold">
         Clients
       </h2>
 
-      <button className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition" onClick={()=>setIsFormOpen(true)}>
+      <Button onClick={() => setIsFormOpen(true)}>
         <Plus size={18} />
         Add Client
-      </button>
+      </Button>
 
     </div>
   );

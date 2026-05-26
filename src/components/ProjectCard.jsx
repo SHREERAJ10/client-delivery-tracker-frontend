@@ -42,7 +42,7 @@ function ProjectCard({
 
   return (
     <div>
-      <div className="mx-auto max-w-6xl border border-[#111111] bg-white p-6 shadow-sm curosr-pointer" onClick={() => navigate(`/client/${clientId}/project/${id}/deliverable`)}>
+      <div className="mx-auto max-w-6xl border border-b-2 border-r-4 border-[#111111] bg-white p-6 shadow-sm curosr-pointer" onClick={() => navigate(`/client/${clientId}/project/${id}/deliverable`)}>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-x-2">

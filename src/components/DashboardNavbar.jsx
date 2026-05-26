@@ -2,6 +2,7 @@ import { Plus, Search } from "lucide-react";
 import { SidebarTrigger } from "./ui/sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Button from "./Button.jsx";
 
 export default function DashboardNavbar({ setIsFormOpen }) {
 
@@ -13,7 +14,7 @@ export default function DashboardNavbar({ setIsFormOpen }) {
 
       <div className="flex items-center gap-3">
         <SidebarTrigger className="lg:hidden" />
-        <div className="text-2xl font-bold">Delivery Dashboard</div>
+        <h2 className="text-2xl font-bold">Delivery Dashboard</h2>
       </div>
 
       <div className="flex items-center gap-5">
@@ -41,10 +42,10 @@ export default function DashboardNavbar({ setIsFormOpen }) {
           />
         </div>
 
-        <button className="flex items-center justify-between gap-2 bg-black text-white p-4 sm:pl-2 sm:pr-4 py-2 text-sm hover:brightness-110 transition whitespace-nowrap" onClick={() => setIsFormOpen(true)}>
+        <Button className="p-4 sm:pl-2 sm:pr-4 " onClick={() => setIsFormOpen(true)}>
           <Plus size={20} />
           <span className="hidden sm:inline text-sm font-semibold">New Delivery</span>
-        </button>
+        </Button>
       </div>
     </nav>
   );

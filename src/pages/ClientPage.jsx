@@ -1,5 +1,6 @@
 import ActionBar from "@/components/ActionBar.jsx";
 import Backdrop from "@/components/Backdrop.jsx";
+import Button from "@/components/Button.jsx";
 import ClientForm from "@/components/ClientForm.jsx";
 import ClientTable from "@/components/ClientTable.jsx";
 import Filter from "@/components/Filter.jsx";
@@ -52,43 +53,43 @@ function ClientPage() {
   };
 
   return (
-    <div className="w-full h-full bg-[#f2f2f2]">
+    <div className="w-full h-full py-5 flex flex-col gap-y-5">
       <ActionBar setIsFormOpen={setIsFormOpen} />
 
-      <div className="flex flex-col gap-y-4 py-4">
-        <section className="flex justify-between gap-4 px-7">
+      <div className="flex flex-col gap-y-8 py-4 px-10">
+        <div className="flex flex-col gap-4">
           <SearchBar placeholder="Search clients by name or email" currPage={currPage} setSearchResult={setClients} route={clientRoute} />
-          <Filter />
-        </section>
-        <section className="flex justify-between px-7">
+
           <ClientTable clients={optimisticClients} setClients={setClients} setOptimisticClients={setOptimisticClients} />
-        </section>
-        <div className="flex justify-around">
-          <button
-            id="previous"
-            className="p-4 border border-black"
-            onClick={() =>
-              handlePageChange(currPage > 1 ? currPage - 1 : currPage)
-            }
-          >
-            previous
-          </button>
-          <button
-            id="forward"
-            className="p-4 border border-black"
-            onClick={() =>
-              handlePageChange(
-                clients != null &&
-                  clients.totalCount > currPage * itemsPerPage
-                  ? currPage + 1
-                  : currPage,
-              )
-            }
-          >
-            forward
-          </button>
         </div>
-        <ProjectStats />
+
+        <div className="flex flex-col gap-16">
+          <div className="flex justify-around">
+            <Button
+              className="px-4 py-3 border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
+              onClick={() =>
+                handlePageChange(currPage > 1 ? currPage - 1 : currPage)
+              }
+            >
+              previous
+            </Button>
+            <Button
+              className="px-4 py-3 border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
+              onClick={() =>
+                handlePageChange(
+                  clients != null &&
+                    clients.totalCount > currPage * itemsPerPage
+                    ? currPage + 1
+                    : currPage,
+                )
+              }
+            >
+              next
+            </Button>
+          </div>
+          <ProjectStats />
+
+        </div>
       </div>
 
       {isFormOpen && (

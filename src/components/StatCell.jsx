@@ -1,19 +1,13 @@
 import React from "react";
 
-function StatCell({label, highlight, value, children}) {
+function StatCell({ label, children, className = "" }) {
   return (
-    <div className="flex flex-col gap-0.5 sm:items-center">
-      
-      <span className="text-[11px] uppercase tracking-wide text-gray-400 sm:hidden">
+    <div className={`flex flex-col gap-0.5 md:block ${className}`}>
+      <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 md:hidden">
         {label}
       </span>
-      <span
-        className={`text-sm font-medium sm:text-center ${
-          highlight ? "text-red-600" : "text-gray-700"
-        }`}
-      >
+      <span className="text-lg font-medium text-black md:font-normal md:text-base md:text-center md:w-full md:inline-block">
         {children}
-        {value}
       </span>
     </div>
   );
