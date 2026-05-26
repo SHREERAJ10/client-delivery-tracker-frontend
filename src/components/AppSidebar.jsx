@@ -55,7 +55,7 @@ export const AppSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton>
-              <Rocket className="w-6! h-6!" />
+              <Rocket className="w-6! h-6! text-[#111111]" />
               <h1 className="font-primary text-xl font-bold uppercase">Agency Flow</h1>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -68,14 +68,20 @@ export const AppSidebar = () => {
               {sidebarItems.slice(0, 4).map((item, index) => {
                 return (
                   <SidebarMenuItem key={index}>
-                    <SidebarMenuButton asChild size={32}>
-                      <NavLink to={item.path} className="gap-x-2.5">
-                        {getIconFromName(item.icon, "!w-5 !h-5")}
-                        <span className="uppercase tracking-wider text-sm font-semibold text-[#444444]">
-                          {item.label}
-                        </span>
-                      </NavLink>
-                    </SidebarMenuButton>
+                    <NavLink to={item.path}>
+                      {({ isActive }) => (
+                        <SidebarMenuButton
+                          isActive={isActive}
+                          className="rounded-none p-5 transition-colors data-[active=true]:bg-[#e7e7e7] data-[active=true]:border-l-5 data-[active=true]:border-[#111111]"
+                        >
+                          {getIconFromName(item.icon, "!w-5 !h-5")}
+
+                          <span className="uppercase tracking-wider text-sm font-semibold text-[#444444]">
+                            {item.label}
+                          </span>
+                        </SidebarMenuButton>
+                      )}
+                    </NavLink>
                   </SidebarMenuItem>
                 );
               })}
