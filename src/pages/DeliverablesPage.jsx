@@ -1,3 +1,4 @@
+import Button from '@/components/Button.jsx';
 import DeliverableOverviewTable from '@/components/DeliverableOverviewTable.jsx'
 import Filter from '@/components/Filter.jsx';
 import SearchBar from '@/components/SearchBar.jsx';
@@ -23,13 +24,13 @@ function DeliverablesPage() {
     const [deliverables, setDeliverables] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const type = searchParams.get('type');
-    const [deliverableType, setDeliverableType] = useState(type);
+    const [deliverableType, setDeliverableType] = useState(type || "");
     const currPage = Number(searchParams.get("page") || 1);
     const itemsPerPage = 10;
 
     useEffect(() => {
         (async () => {
-            const data = await getData(user, `/dashboard/deliverables/?page=${currPage}${type ? `&type=${type}` : ""}`);
+            const data = await getData(user, `/dashboard/deliverables/?page=${currPage}&pageSize=10${type ? `&type=${type}` : ""}`);
             setDeliverables(data);
         })();
     }, [searchParams]);
@@ -41,13 +42,15 @@ function DeliverablesPage() {
     };
 
     return (
-        <div>
-            <section className="flex justify-between gap-4 px-7">
+        <div className="px-10 py-6 flex flex-col gap-4">
+            <section className="flex justify-between flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-4">
                 <SearchBar placeholder="Search deliverables by client, project, deliverable name or status..." currPage={currPage} setSearchResult={setDeliverables} route={deliverablesRoute} />
                 <Filter options={filterOptions} value={deliverableType} onChange={(value) => {
+                    const params = new URLSearchParams(searchParams);
                     setDeliverableType(value);
                     if (value != "") {
-                        setSearchParams({ type: value });
+                        params.set("type", value);
+                        setSearchParams(params);
                     }
                     else {
                         searchParams.delete("type");
@@ -58,18 +61,17 @@ function DeliverablesPage() {
 
             <DeliverableOverviewTable deliverables={deliverables.items} type={type} />
             <div className="flex justify-around">
-                <button
-                    id="previous"
-                    className="p-4 border border-black"
+                <Button
+                    className="px-4 py-3 border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
                     onClick={() =>
                         handlePageChange(currPage > 1 ? currPage - 1 : currPage)
                     }
                 >
                     previous
-                </button>
-                <button
+                </Button>
+                <Button
                     id="forward"
-                    className="p-4 border border-black"
+                    className="px-4 py-3 border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
                     onClick={() =>
                         handlePageChange(
                             deliverables != null &&
@@ -79,8 +81,8 @@ function DeliverablesPage() {
                         )
                     }
                 >
-                    forward
-                </button>
+                    Next
+                </Button>
             </div>
         </div>
     )

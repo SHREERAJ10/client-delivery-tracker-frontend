@@ -101,7 +101,7 @@ export const AppSidebar = () => {
                   </span>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent className="rounded-none">
                 <a href="https://github.com/SHREERAJ10" target="_blank">
                   <DropdownMenuItem>
                     <Briefcase />
