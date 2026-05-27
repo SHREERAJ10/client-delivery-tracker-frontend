@@ -7,11 +7,14 @@ import { NavLink } from "react-router-dom";
 function DeliverableOverview({ heading, deliverableRoute, type }) {
   const { user } = useContext(AuthContext);
   const [deliverableData, setDeliverableData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       const data = await getData(user, deliverableRoute);
       setDeliverableData(data);
+      setIsLoading(false);
     })();
   }, []);
 
@@ -25,7 +28,7 @@ function DeliverableOverview({ heading, deliverableRoute, type }) {
           View all
         </NavLink>
       </div>
-      <DeliverableOverviewTable deliverables={deliverableData.items} type={type} />
+      <DeliverableOverviewTable isLoading={isLoading} deliverables={deliverableData.items} type={type} />
     </section>
   );
 }

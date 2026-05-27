@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 export default function TableSkeleton({
   rows = 5,
   size = "md:grid-cols-[2fr_1fr_1fr_1fr_40px]",
+  skeletonAlign = "items-center"
 }) {
   return (
     <div className="flex flex-col gap-4 md:block">
@@ -20,12 +21,11 @@ export default function TableSkeleton({
             ${size}
           `}
         >
-          {/* Client name */}
           <Skeleton className="h-5 w-32" />
 
           {/* Fake kebab/menu */}
           <div className="justify-self-end md:hidden">
-            <Skeleton className="h-5 w-5 rounded-full" />
+            <Skeleton className="h-5 w-5" />
           </div>
 
           {/* Stats section */}
@@ -33,7 +33,7 @@ export default function TableSkeleton({
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="flex flex-col gap-1 md:items-center"
+                className={`flex flex-col gap-1 md:${skeletonAlign}`}
               >
                 {/* Mobile label */}
                 <Skeleton className="h-3 w-14 md:hidden" />
@@ -46,7 +46,7 @@ export default function TableSkeleton({
 
           {/* Desktop menu column */}
           <div className="hidden md:flex md:justify-end">
-            <Skeleton className="h-5 w-5 rounded-full" />
+            <Skeleton className="h-5 w-5" />
           </div>
         </div>
       ))}

@@ -20,9 +20,9 @@ function DeliverableOverviewRow({ item, formatDate }) {
           </span>
         </DeliverableOverviewCell>
         <DeliverableOverviewCell label="Project">
-          <spanc className="font-normal text-gray-800">
+          <span className="font-normal text-gray-800">
             {item.projectName}
-          </spanc>
+          </span>
         </DeliverableOverviewCell>
         <DeliverableOverviewCell label="Deliverable Name">
           <span className="font-medium">
