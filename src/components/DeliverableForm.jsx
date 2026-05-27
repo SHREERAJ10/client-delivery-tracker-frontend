@@ -75,10 +75,17 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setOp
     }
   }, [currClientId]);
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   return (
     <div className="relative w-full max-w-lg bg-gray-50 shadow-md p-6 z-10">
       <h2 className="text-xl font-semibold text-[#111] mb-6">
-        Add Deliverable
+        {mode=="UPDATE"?"Update":"Add"} Deliverable
       </h2>
 
       <form
