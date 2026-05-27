@@ -5,7 +5,7 @@ import AuthContext from "@/context/AuthContext.jsx";
 import Input from "./Input.jsx";
 import Button from "./Button.jsx";
 
-export default function ClientForm({ setIsOpen, mode, prefillData, id, setOptimisticClients, setClients, triggerRefetch }) {
+export default function ClientForm({ setIsOpen, mode, prefillData, id, setClients, triggerRefetch }) {
   const createRoute = `/client`;
   const updateRoute = `/client/${id}`;
   const initialData =
@@ -23,17 +23,16 @@ export default function ClientForm({ setIsOpen, mode, prefillData, id, setOptimi
 
   const handleAddOptimisticClient = (optimisticClient) => {
     startTransition(() => {
-      setOptimisticClients({ action: "ADD", client: optimisticClient });
       setClients((clients) => { return { ...clients, items: [optimisticClient, ...clients.items] } })
-    });
+    })
   }
   const handleUpdateOptimisticClient = (optimisticClient) => {
     startTransition(() => {
-      setOptimisticClients({ action: "UPDATE", client: optimisticClient });
       setClients((clients) => {
         return { ...clients, items: clients?.items?.map((client) => client.id == optimisticClient.id ? optimisticClient : client) }
       });
-    });
+    })
+
   }
 
   useEffect(() => {
@@ -44,7 +43,7 @@ export default function ClientForm({ setIsOpen, mode, prefillData, id, setOptimi
   }, []);
 
   return (
-    <div className="relative w-full max-w-md z-10 flex items-center justify-center">
+    <div className="relative w-full max-w-md flex items-center justify-center z-80">
       <div className="w-full max-w-md bg-white shadow-md p-6">
         <h2 className="text-2xl font-semibold text-[#111] mb-6">
           {mode == "UPDATE" ? "Update" : "Add"} Client
@@ -64,6 +63,7 @@ export default function ClientForm({ setIsOpen, mode, prefillData, id, setOptimi
               setIsOpen(false);
               await createRecord(user, createRoute, data);
               triggerRefetch();
+
             } else if (mode == "UPDATE") {
               handleUpdateOptimisticClient(optimisticClient);
               setIsOpen(false);
@@ -92,6 +92,7 @@ export default function ClientForm({ setIsOpen, mode, prefillData, id, setOptimi
 
           <div className="flex justify-end gap-3 pt-4">
             <Button
+              type="button"
               variant="outline"
               onClick={() => setIsOpen(false)}
             >

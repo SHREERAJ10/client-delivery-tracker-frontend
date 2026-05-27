@@ -1,30 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { Search } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
-import { getData } from "@/utils/api.js";
-import AuthContext from "@/context/AuthContext.jsx";
 
-function SearchBar({ placeholder, currPage, setSearchResult, route }) {
-
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('searchQuery') || "");
-  const { user } = useContext(AuthContext);
-
-  useEffect(() => {
-    const searchQuery = searchParams.get('searchQuery');
-
-    (async () => {
-      if (searchQuery) {
-        const searchResult = await getData(
-          user,
-          `${route}/?page=${currPage}&searchQuery=${searchQuery}`,
-        );
-        setSearchResult(searchResult);
-      }
-    })();
-
-  }, [searchParams]);
-
+function SearchBar({ placeholder, searchTerm, searchParams, setSearchTerm, setSearchParams}) {
 
   return (
     <div className="flex items-center w-full bg-white border border-gray-300 focus-within:ring-1 focus-within:ring-black-500">
@@ -35,15 +12,18 @@ function SearchBar({ placeholder, currPage, setSearchResult, route }) {
         value={searchTerm}
         onChange={(e) => {
           if (e.target.value?.trim() == "") {
-            searchParams.delete("searchQuery");
-            setSearchParams(searchParams);
+            const newParams = new URLSearchParams(searchParams);
+            newParams.delete("searchQuery");
+            setSearchParams(newParams);
           }
           setSearchTerm(e.target.value);
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             if (searchTerm?.trim() != "") {
-              setSearchParams({ searchQuery: searchTerm });
+              const newParams = new URLSearchParams(searchParams);
+              newParams.set("searchQuery", searchTerm);
+              setSearchParams(newParams);
             }
           }
         }}
@@ -53,7 +33,9 @@ function SearchBar({ placeholder, currPage, setSearchResult, route }) {
         type="button"
         onClick={() => {
           if (searchTerm?.trim() != "") {
-            setSearchParams({ searchQuery: searchTerm });
+            const newParams = new URLSearchParams(searchParams);
+            newParams.set("searchQuery", searchTerm);
+            setSearchParams(newParams);
           }
         }}
         className="flex items-center justify-center px-3 text-gray-500 peer-focus:text-gray-900"

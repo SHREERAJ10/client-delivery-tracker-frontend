@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ClientRow from "./ClientRow.jsx";
-import  TableSkeleton  from "./TableSkeleton.jsx";
+import TableSkeleton from "./TableSkeleton.jsx";
 
-function ClientTable({ clients, setOptimisticClients, setClients, triggerRefetch, isLoading }) {
+function ClientTable({ clients, setClients, triggerRefetch, isLoading }) {
+
+  const navigate = useNavigate();
 
   return (
     <section className="w-full">
@@ -15,8 +17,6 @@ function ClientTable({ clients, setOptimisticClients, setClients, triggerRefetch
           <span />
         </div>
 
-
-
         <div className="flex flex-col gap-4 md:block">
           {isLoading ?
             <TableSkeleton size="grid-cols-[2fr_1fr_1fr_1fr_40px]" />
@@ -24,15 +24,13 @@ function ClientTable({ clients, setOptimisticClients, setClients, triggerRefetch
             <>
               {clients?.items?.length ? (
                 clients.items.map((client) => (
-                  <Link to={`/client/${client.id}/project`} >
-                    <ClientRow
-                      key={client.id}
-                      client={client}
-                      setOptimisticClients={setOptimisticClients}
-                      setClients={setClients}
-                      triggerRefetch={triggerRefetch}
-                    />
-                  </Link>
+                  <ClientRow
+                    client={client}
+                    onClick={() => navigate(`/client/${client.id}/project`)}
+                    setClients={setClients}
+                    triggerRefetch={triggerRefetch}
+                  />
+
                 ))
               ) : (
                 <p className="py-6 text-center text-sm italic text-gray-400">

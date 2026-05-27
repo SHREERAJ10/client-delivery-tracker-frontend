@@ -3,48 +3,50 @@ import Backdrop from "@/components/Backdrop.jsx";
 import Button from "@/components/Button.jsx";
 import ClientForm from "@/components/ClientForm.jsx";
 import ClientTable from "@/components/ClientTable.jsx";
-import Filter from "@/components/Filter.jsx";
 import ProjectStats from "@/components/ProjectStats.jsx";
 import SearchBar from "@/components/SearchBar.jsx";
 import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
-import React, { useContext, useEffect, useOptimistic, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-
-const clientRoute = "/client/overview";
 
 function ClientPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { user } = useContext(AuthContext);
   const [clients, setClients] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('searchQuery') || "");
   const [refetchTrigger, setRefetchTrigger] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [optimisticClients, setOptimisticClients] = useOptimistic(clients, (currClients, action) => {
-    switch (action.type) {
-      case "ADD":
-        return { ...currClients, items: [...currClients.items, action.client] };
-      case "UPDATE":
-        return currClients.items.map((client) => client.id == action.client.id ? action.client : client);
-      case "DELETE":
-        return currClients.items.filter((client) => client.id != action.client.id);
-      default:
-        return currClients;
-    }
-  });
+  const currPage = Number(searchParams.get("page") || 1);
+  const searchQuery = searchParams.get('searchQuery');
+  const itemsPerPage = 5;
 
   useEffect(() => {
     (async () => {
-      const clientOverviewData = await getData(
-        user,
-        `/client/overview/?page=${currPage}`,
-      );
+      setIsLoading(true);
+      let url = `/client/overview/?page=${currPage}`;
+      if (searchQuery) {
+        url += `&searchQuery=${searchQuery}`;
+      }
+      const clientOverviewData = await getData(user, url);
+
+      setClients(clientOverviewData);
+      setIsLoading(false);
+    })();
+  }, [searchQuery, currPage]);
+
+  useEffect(() => {
+    (async () => {
+      let url = `/client/overview/?page=${currPage}`;
+      if (searchQuery) {
+        url += `&searchQuery=${searchQuery}`;
+      }
+      const clientOverviewData = await getData(user, url);
       setClients(clientOverviewData);
     })();
-  }, [searchParams, refetchTrigger]);
-
-  const currPage = Number(searchParams.get("page") || 1);
-  const itemsPerPage = 5;
+  }, [refetchTrigger]);
 
   const handlePageChange = (newPage) => {
     const params = new URLSearchParams(searchParams);
@@ -58,9 +60,9 @@ function ClientPage() {
 
       <div className="flex flex-col gap-y-8">
         <div className="flex flex-col gap-4">
-          <SearchBar placeholder="Search clients by name or email" currPage={currPage} setSearchResult={setClients} route={clientRoute} />
+          <SearchBar placeholder="Search clients by name or email" searchTerm={searchTerm} setSearchTerm={setSearchTerm} searchParams={searchParams} setSearchParams={setSearchParams} />
 
-          <ClientTable clients={optimisticClients} setClients={setClients} setOptimisticClients={setOptimisticClients} />
+          <ClientTable clients={clients} setClients={setClients} isLoading={isLoading} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
         </div>
 
         <div className="flex flex-col gap-16">
@@ -94,7 +96,7 @@ function ClientPage() {
       {isFormOpen && (
         <div className="fixed inset-0 flex justify-center items-center z-50">
           <Backdrop setIsOpen={setIsFormOpen} />
-          <ClientForm setIsOpen={setIsFormOpen} mode="CREATE" setClients={setClients} setOptimisticClients={setOptimisticClients} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
+          <ClientForm setIsOpen={setIsFormOpen} mode="CREATE" setClients={setClients} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
         </div>
       )}
     </div>

@@ -8,7 +8,7 @@ import { deleteRecord } from "@/utils/api.js";
 import AuthContext from "@/context/AuthContext.jsx";
 import ConfirmDialog from "./ConfirmDialog.jsx";
 
-function ClientRow({ client, setClients, setOptimisticClients, triggerRefetch }) {
+function ClientRow({ onClick, client, setClients, triggerRefetch }) {
   const deleteClientRoute = `/client/${client.id}`;
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -16,13 +16,13 @@ function ClientRow({ client, setClients, setOptimisticClients, triggerRefetch })
 
   const handleDeleteOptimisticProject = (clientId) => {
     startTransition(() => {
-      setOptimisticClients({ action: "DELETE", client: { id: clientId } });
       setClients((clients) => { return { ...clients, items: clients?.items?.filter((client) => client.id != clientId) } });
-    });
+    })
   }
 
   const deleteClient = async () => {
     handleDeleteOptimisticProject(client.id);
+    setIsDialogOpen(false);
     await deleteRecord(user, deleteClientRoute);
     triggerRefetch();
   };
@@ -31,7 +31,7 @@ function ClientRow({ client, setClients, setOptimisticClients, triggerRefetch })
     <>
       <div
         className="
-    grid cursor-pointer bg-white px-4 py-3
+    grid bg-white px-4 py-3
     hover:bg-gray-50 transition-colors
 
     border border-b-2 border-r-4 border-[#111]
@@ -41,7 +41,7 @@ function ClientRow({ client, setClients, setOptimisticClients, triggerRefetch })
     md:grid-cols-[2fr_1fr_1fr_1fr_40px] md:gap-y-0 md:items-center
   "
       >
-        <div className="text-sm font-bold text-[#111]">
+        <div className="text-sm font-bold text-[#111] cursor-pointer" onClick={onClick}>
           {client.name}
         </div>
 
@@ -86,7 +86,6 @@ function ClientRow({ client, setClients, setOptimisticClients, triggerRefetch })
               email: client.email,
             }}
             id={client.id}
-            setOptimisticClients={setOptimisticClients}
             setClients={setClients}
             triggerRefetch={triggerRefetch}
           />
