@@ -1,21 +1,41 @@
 import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
 import { useContext, useEffect, useState } from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 
 function MetricsGrid() {
   const { user } = useContext(AuthContext);
   const [metrics, setMetrics] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       const data = await getData(user, "/dashboard");
       setMetrics(data);
+      setIsLoading(false);
     })();
   }, []);
 
+  if (isLoading) return (
+    <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
+      {Array.from({ length: 4 }, (_, i) => i).map((_, i) => {
+        return (
+          <Card key={i} className="pl-4 md:pl-8 py-10 rounded-none shadown-sm">
+            <CardHeader>
+              <Skeleton className="h-4 w-2/3 bg-[#efefef]" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="aspect-video w-1/2 h-full bg-[#efefef]" />
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  )
+
   return (
     <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 font-primary">
-
       {metrics.slice(0, 3).map((item) => (
         <div key={item.key} className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-none shadow-sm flex flex-col justify-center items-start pl-4 md:pl-8 py-10">
           <span className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-widest">
@@ -39,7 +59,6 @@ function MetricsGrid() {
             {metrics[metrics.length - 1].value > 1 && <span class="text-xs text-white bg-black px-2 py-2 font-bold tracking-widest uppercase">ACTION REQUIRED</span>}
 
           </div>
-
         </div>
       )}
     </div>

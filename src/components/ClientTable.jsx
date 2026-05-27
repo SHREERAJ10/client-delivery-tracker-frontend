@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import ClientRow from "./ClientRow.jsx";
+import  TableSkeleton  from "./TableSkeleton.jsx";
 
-function ClientTable({ clients, setOptimisticClients, setClients, triggerRefetch }) {
+function ClientTable({ clients, setOptimisticClients, setClients, triggerRefetch, isLoading }) {
 
   return (
     <section className="w-full">
@@ -14,27 +15,34 @@ function ClientTable({ clients, setOptimisticClients, setClients, triggerRefetch
           <span />
         </div>
 
+
+
         <div className="flex flex-col gap-4 md:block">
-          {clients?.items?.length ? (
-            clients.items.map((client) => (
-              <Link to={`/client/${client.id}/project`} >
-                <ClientRow
-                  key={client.id}
-                  client={client}
-                  setOptimisticClients={setOptimisticClients}
-                  setClients={setClients}
-                  triggerRefetch={triggerRefetch}
-                />
-              </Link>
-            ))
-          ) : (
-            <p className="py-6 text-center text-sm italic text-gray-400">
-              No Clients Found!
-            </p>
-          )}
+          {isLoading ?
+            <TableSkeleton size="grid-cols-[2fr_1fr_1fr_1fr_40px]" />
+            :
+            <>
+              {clients?.items?.length ? (
+                clients.items.map((client) => (
+                  <Link to={`/client/${client.id}/project`} >
+                    <ClientRow
+                      key={client.id}
+                      client={client}
+                      setOptimisticClients={setOptimisticClients}
+                      setClients={setClients}
+                      triggerRefetch={triggerRefetch}
+                    />
+                  </Link>
+                ))
+              ) : (
+                <p className="py-6 text-center text-sm italic text-gray-400">
+                  No Clients Found!
+                </p>
+              )}
+            </>
+          }
         </div>
       </div>
-
     </section>
   );
 }

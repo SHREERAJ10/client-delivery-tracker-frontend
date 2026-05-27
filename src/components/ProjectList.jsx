@@ -1,10 +1,16 @@
 import React from 'react'
 import ProjectCard from './ProjectCard.jsx';
+import ProjectCardSkeleton from './ProjectCardSkeleton.jsx';
 
 function ProjectList({ projects, setProjects, setOptimisticProjects, triggerRefetch }) {
-    console.log(projects)
-    if (!projects) return null;
 
+    if (!projects) return (
+        <section className="flex flex-col gap-y-8">
+            {Array.from({ length: 4 }, (_, i) => i).map((el, i) => {
+                return <ProjectCardSkeleton key={i} />
+            })}
+        </section>
+    )
     return (
         <>
             <section className="flex flex-col gap-y-8">
@@ -21,7 +27,7 @@ function ProjectList({ projects, setProjects, setOptimisticProjects, triggerRefe
                         );
                     })
                 }
-            </section>
+            </section >
         </>
     )
 }
