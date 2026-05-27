@@ -4,12 +4,11 @@ import ClientForm from "./ClientForm.jsx";
 import KebabMenu from "./KebabMenu.jsx";
 
 import StatCell from "./StatCell.jsx";
-import ProjectForm from "./ProjectForm.jsx";
 import { deleteRecord } from "@/utils/api.js";
 import AuthContext from "@/context/AuthContext.jsx";
 import ConfirmDialog from "./ConfirmDialog.jsx";
 
-function ClientRow({ client, onClick, setClients, setOptimisticClients, triggerRefetch }) {
+function ClientRow({ client, setClients, setOptimisticClients, triggerRefetch }) {
   const deleteClientRoute = `/client/${client.id}`;
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -31,7 +30,6 @@ function ClientRow({ client, onClick, setClients, setOptimisticClients, triggerR
   return (
     <>
       <div
-        onClick={onClick}
         className="
     grid cursor-pointer bg-white px-4 py-3
     hover:bg-gray-50 transition-colors

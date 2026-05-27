@@ -111,13 +111,12 @@ function DeliverablePage() {
             {currProject ? currProject.name : "Project"}
           </h2>
 
-          <button
-            className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 hover:brightness-110 transition"
+          <Button
             onClick={() => setIsFormOpen(true)}
           >
             <Plus size={18} />
             Add Deliverable
-          </button>
+          </Button>
         </section>
       </div>
       <div className="flex flex-col gap-y-10">

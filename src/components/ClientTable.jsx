@@ -1,8 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ClientRow from "./ClientRow.jsx";
 
 function ClientTable({ clients, setOptimisticClients, setClients, triggerRefetch }) {
-  const navigate = useNavigate();
 
   return (
     <section className="w-full">
@@ -18,14 +17,15 @@ function ClientTable({ clients, setOptimisticClients, setClients, triggerRefetch
         <div className="flex flex-col gap-4 md:block">
           {clients?.items?.length ? (
             clients.items.map((client) => (
-              <ClientRow
-                key={client.id}
-                client={client}
-                onClick={() => navigate(`/client/${client.id}/project`)}
-                setOptimisticClients={setOptimisticClients}
-                setClients={setClients}
-                triggerRefetch={triggerRefetch}
-              />
+              <Link to={`/client/${client.id}/project`} >
+                <ClientRow
+                  key={client.id}
+                  client={client}
+                  setOptimisticClients={setOptimisticClients}
+                  setClients={setClients}
+                  triggerRefetch={triggerRefetch}
+                />
+              </Link>
             ))
           ) : (
             <p className="py-6 text-center text-sm italic text-gray-400">

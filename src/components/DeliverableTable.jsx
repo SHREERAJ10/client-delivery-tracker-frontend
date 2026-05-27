@@ -7,7 +7,7 @@ function DeliverableTable({ deliverables, setDeliverables, setOptimisticDelivera
 
   return (
     <section className="w-full">
-      <div className="w-full border-0 md:border md:border-gray-200 overflow-hidden font-secondary">
+      <div className="w-full border-0 md:border md:border-gray-200 overflow-hidden">
         <div className="hidden md:grid md:grid-cols-[2fr_1fr_1fr_1fr_40px] bg-gray-50 px-4 py-3 text-sm text-gray-500 uppercase font-semibold">
           <span>Deliverable Name</span>
           <span className="text-center">Due Date</span>

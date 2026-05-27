@@ -35,7 +35,7 @@ function DeliverableRow({ deliverable, id, setOptimisticDeliverables, setDeliver
     <>
       <div
         className="
-          grid cursor-pointer border border-b-2 border-r-4 border-[#111] bg-white px-4 py-3
+          grid border border-b-2 border-r-4 border-[#111] bg-white px-4 py-3
           hover:bg-gray-50 transition-colors
   
           grid-cols-2 gap-y-3 md:border-0 md:border-t md:border-gray-200
