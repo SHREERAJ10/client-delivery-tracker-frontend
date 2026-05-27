@@ -7,7 +7,7 @@ import { convertToISOString } from "@/utils/convertToISOString.js";
 import { useParams } from "react-router-dom";
 import Button from "./Button.jsx";
 
-function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, setProjects, triggerRefetch }) {
+function ProjectForm({ mode, setIsOpen, id, prefillData, setProjects, triggerRefetch }) {
   const { clientId } = useParams();
 
   const createRoute = `/client/${clientId}/project`;
@@ -35,13 +35,12 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
 
   const handleAddOptimisticProject = (optimisticProject) => {
     startTransition(() => {
-      setOptimisticProjects({ action: "ADD", project: optimisticProject });
-      setProjects((projects) => { return { ...projects, items: [...projects.items, optimisticProject] } })
+      setProjects((projects) => { return { ...projects, items: [...projects.items, optimisticProject] } }
+      )
     });
   }
   const handleUpdateOptimisticProject = (optimisticProject) => {
     startTransition(() => {
-      setOptimisticProjects({ action: "UPDATE", project: optimisticProject });
       setProjects((projects) => {
         return { ...projects, items: projects?.items?.map((project) => project.id == optimisticProject.id ? optimisticProject : project) }
       });
@@ -64,6 +63,7 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
     })();
   }, []);
 
+
   return (
     <div className="relative w-full max-w-md z-10 flex items-center justify-center">
       <div className="w-full max-w-md bg-white shadow-md p-6">
@@ -74,6 +74,8 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
         <form
           className="space-y-5"
           onSubmit={handleSubmit(async (data) => {
+            console.log("click project")
+
             const optimisticProject = {
               id: id || "temporary",
               name: data.projectName,
@@ -172,6 +174,7 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setOptimisticProjects, 
 
           <div className="flex justify-end gap-3 pt-4">
             <Button
+              type="button"
               variant="outline"
               onClick={() => setIsOpen(false)}
             >
