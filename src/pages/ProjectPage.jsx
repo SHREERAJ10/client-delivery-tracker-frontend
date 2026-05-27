@@ -16,6 +16,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import Button from "@/components/Button.jsx";
 
 function ProjectPage() {
   const { clientId } = useParams();
@@ -71,8 +72,8 @@ function ProjectPage() {
   }, [searchParams, refetchTrigger]);
 
   return (
-    <div className="flex flex-col gap-18 sm:gap-8 px-4 sm:px-10 pt-10 pb-6">
-      <div className="flex flex-col">
+    <div className="flex flex-col gap-18 md:gap-8 px-4 md:px-10 pt-10 pb-6">
+      <div className="flex flex-col gap-y-6">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -88,7 +89,7 @@ function ProjectPage() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <section className="w-full h-16 bg-white flex flex-col items-start gap-y-4 sm:flex-row sm:items-center justify-between">
+        <section className="w-full bg-white flex flex-col items-start gap-y-4 md:flex-row md:items-center justify-between">
           <h2 className="font-primary text-3xl font-extrabold">
             {currClient ? currClient.name : "Project"}
           </h2>
@@ -105,7 +106,7 @@ function ProjectPage() {
 
       <div className="flex flex-col gap-y-10">
 
-        <section className="flex flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-4">
+        <section className="flex flex-col items-start md:flex-row md:justify-between md:items-center gap-4">
           <SearchBar placeholder="Search projects by name or status..." currPage={currPage} setSearchResult={setProjects} route={`/client/${clientId}/project/details`} />
           <Filter options={statusList} value={currStatus} onChange={(value) => {
             setCurrStatus(value);
@@ -123,18 +124,16 @@ function ProjectPage() {
 
         </div>
         <div className="flex justify-around">
-          <button
-            id="previous"
-            className="px-4 py-3 text-sm text-white bg-[#111] border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
+          <Button
+            className="px-4 py-3 border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
             onClick={() =>
               handlePageChange(currPage > 1 ? currPage - 1 : currPage)
             }
           >
             Previous
-          </button>
-          <button
-            id="forward"
-            className="px-4 py-3 text-sm text-white bg-[#111] border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
+          </Button>
+          <Button
+            className="px-4 py-3 border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
             onClick={() =>
               handlePageChange(
                 projects != null &&
@@ -145,7 +144,7 @@ function ProjectPage() {
             }
           >
             Next
-          </button>
+          </Button>
         </div>
       </div>
       {isFormOpen && (

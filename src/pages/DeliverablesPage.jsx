@@ -42,7 +42,8 @@ function DeliverablesPage() {
     };
 
     return (
-        <div className="px-10 py-6 flex flex-col gap-4">
+        <div className="px-10 pt-8 pb-6 flex flex-col gap-6">
+            <h1 className="text-2xl font-bold">Search Deliverables</h1>
             <section className="flex justify-between flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-4">
                 <SearchBar placeholder="Search deliverables by client, project, deliverable name or status..." currPage={currPage} setSearchResult={setDeliverables} route={deliverablesRoute} />
                 <Filter options={filterOptions} value={deliverableType} onChange={(value) => {

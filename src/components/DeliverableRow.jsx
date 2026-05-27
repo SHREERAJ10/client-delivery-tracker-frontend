@@ -9,8 +9,9 @@ import { DeliverableNote } from "./DeliverableNote.jsx";
 import Backdrop from "./Backdrop.jsx";
 import ConfirmDialog from "./ConfirmDialog.jsx";
 import { useParams } from "react-router-dom";
+import Badge from "./Badge.jsx";
 
-function DeliverableRow({ deliverable, id, setOptimisticDeliverables, setDeliverables,triggerRefetch }) {
+function DeliverableRow({ deliverable, id, setOptimisticDeliverables, setDeliverables, triggerRefetch }) {
   const { clientId, projectId } = useParams();
   const deleteDeliverableRoute = `/client/${clientId}/project/${projectId}/deliverable/${id}`;
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -18,11 +19,11 @@ function DeliverableRow({ deliverable, id, setOptimisticDeliverables, setDeliver
   const { user } = useContext(AuthContext);
 
   const handleDeleteOptimisticDeliverable = (deliverableId) => {
-      startTransition(() => {
-        setOptimisticDeliverables({ action: "DELETE", deliverable: { id: deliverableId } });
-        setDeliverables((deliverables) => { return { ...deliverables, items: deliverables?.items?.filter((deliverable) => deliverable.id != deliverableId) } });
-      });
-    }
+    startTransition(() => {
+      setOptimisticDeliverables({ action: "DELETE", deliverable: { id: deliverableId } });
+      setDeliverables((deliverables) => { return { ...deliverables, items: deliverables?.items?.filter((deliverable) => deliverable.id != deliverableId) } });
+    });
+  }
 
   const deleteDeliverable = async () => {
     handleDeleteOptimisticDeliverable(id);
@@ -34,32 +35,30 @@ function DeliverableRow({ deliverable, id, setOptimisticDeliverables, setDeliver
     <>
       <div
         className="
-          grid cursor-pointer border-t border-gray-200 bg-white px-4 py-3
+          grid cursor-pointer border border-b-2 border-r-4 border-[#111] bg-white px-4 py-3
           hover:bg-gray-50 transition-colors
   
-          grid-cols-2 gap-y-3
-          sm:grid-cols-[2fr_1fr_1fr_1fr_40px] sm:gap-y-0 sm:items-center
+          grid-cols-2 gap-y-3 md:border-0 md:border-t md:border-gray-200
+          md:grid-cols-[2fr_1fr_1fr_1fr_40px] md:gap-y-0 md:items-center
         "
       >
-        <div className="col-span-2 sm:col-span-1 font-medium text-sm text-gray-800">
+
+        <div className="text-sm font-bold text-[#111]">
           {deliverable.name}
         </div>
 
-        <StatCell label="Due Date" value={formatDate(deliverable.due_Date) ?? 0} />
-
-        <StatCell
-          label="Status"
-          value={deliverable.status.status}
-        />
-
-        <StatCell
-          label="Notes"
-        >
-          <DeliverableNote note={deliverable.note} />
-        </StatCell>
+        <div className="grid grid-cols-3 gap-2 col-span-2 md:contents">
+          <StatCell label="Due Date">{formatDate(deliverable.due_Date) ?? 0}</StatCell>
+          <StatCell label="Status">
+            <Badge>{deliverable.status.status}</Badge>
+          </StatCell>
+          <StatCell label="Notes">
+            <DeliverableNote note={deliverable.note} />
+          </StatCell>
+        </div>
 
         <div
-          className="col-start-2 row-start-1 sm:col-auto sm:row-auto justify-self-end"
+          className="col-start-2 row-start-1 md:col-auto md:row-auto justify-self-end"
           onClick={(e) => e.stopPropagation()}
         >
           <KebabMenu

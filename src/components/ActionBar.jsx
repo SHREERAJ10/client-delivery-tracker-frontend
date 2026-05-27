@@ -3,7 +3,7 @@ import Button from "./Button.jsx";
 
 function ActionBar({ setIsFormOpen }) {
   return (
-    <div className="w-full flex items-center justify-between px-4 md:px-8">
+    <div className="w-full flex items-center justify-between">
 
       <h2 className="text-3xl font-bold">
         Clients

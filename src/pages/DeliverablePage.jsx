@@ -1,4 +1,5 @@
 import Backdrop from "@/components/Backdrop.jsx";
+import Button from "@/components/Button.jsx";
 import DeliverableForm from "@/components/DeliverableForm.jsx";
 import DeliverableStats from "@/components/DeliverableStats.jsx";
 import DeliverableTable from "@/components/DeliverableTable.jsx";
@@ -8,12 +9,21 @@ import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
 import { Plus } from "lucide-react";
 import React, { useContext, useEffect, useOptimistic, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { NavLink, useParams, useSearchParams } from "react-router-dom";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 
 function DeliverablePage() {
 
   const { clientId, projectId } = useParams();
   const [currProject, setCurrProject] = useState(null);
+  const [currClient, setCurrClient] = useState(null);
   const { user } = useContext(AuthContext);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [deliverables, setDeliverables] = useState(null);
@@ -49,7 +59,9 @@ function DeliverablePage() {
     (async () => {
       const project = await getData(user, `/project/${projectId}`);
       const statusList = await getData(user, "/status/?type=DELIVERABLE");
+      const client = await getData(user, `/client/${clientId}`);
       setCurrProject(project);
+      setCurrClient(client);
       setStatusList(statusList);
     })();
   }, []);
@@ -65,22 +77,47 @@ function DeliverablePage() {
   }, [searchParams, refetchTrigger]);
 
   return (
-    <div>
-      <div className="w-full h-16 bg-white border-b flex items-center justify-between px-4 md:pr-8 md:pl-4">
-        <h2 className="font-primary text-xl font-semibold">
-          {currProject && currProject.name}
-        </h2>
+    <div className="flex flex-col gap-18 md:gap-8 px-4 md:px-10 pt-10 pb-6">
+      <div className="flex flex-col gap-y-6">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <NavLink to="/client" className="uppercase font-semibold tracking-wide">
+                  Client
+                </NavLink>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <NavLink to={`/client/${clientId}/project`} className="uppercase font-semibold tracking-wide">
+                  {currClient ? currClient.name : "Client"}
+                </NavLink>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="uppercase font-semibold tracking-wide">{currProject ? currProject.name : "Project"}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <section className="w-full bg-white flex flex-col items-start gap-y-4 md:flex-row md:items-center justify-between">
+          <h2 className="font-primary text-3xl font-extrabold">
+            {currProject ? currProject.name : "Project"}
+          </h2>
 
-        <button
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-          onClick={() => setIsFormOpen(true)}
-        >
-          <Plus size={18} />
-          Add Deliverable
-        </button>
+          <button
+            className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 hover:brightness-110 transition"
+            onClick={() => setIsFormOpen(true)}
+          >
+            <Plus size={18} />
+            Add Deliverable
+          </button>
+        </section>
       </div>
-      <div className="flex flex-col gap-y-4 py-4">
-        <section className="flex justify-between gap-4 px-7">
+      <div className="flex flex-col gap-y-10">
+        <section className="flex flex-col items-start md:flex-row md:justify-between md:items-center gap-4">
           <SearchBar placeholder="Search deliverables by name or status..." currPage={currPage} setSearchResult={setDeliverables} route={`/client/${clientId}/project/${projectId}/deliverable`} />
           <Filter options={statusList} value={currStatus} onChange={(value) => {
             setCurrStatus(value);
@@ -93,36 +130,35 @@ function DeliverablePage() {
             }
           }} />
         </section>
-        <section className="flex justify-between px-7">
-          <DeliverableTable deliverables={optimisticDeliverables} setOptimisticDeliverables={setOptimisticDeliverables} setDeliverables={setDeliverables} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
-        </section>
-        <div className="flex justify-around">
-          <button
-            id="previous"
-            className="p-4 border border-black"
-            onClick={() =>
-              handlePageChange(currPage > 1 ? currPage - 1 : currPage)
-            }
-          >
-            previous
-          </button>
-          <button
-            id="forward"
-            className="p-4 border border-black"
-            onClick={() =>
-              handlePageChange(
-                deliverables != null &&
-                  deliverables.totalCount > currPage * itemsPerPage
-                  ? currPage + 1
-                  : currPage,
-              )
-            }
-          >
-            forward
-          </button>
+        <DeliverableTable deliverables={optimisticDeliverables} setOptimisticDeliverables={setOptimisticDeliverables} setDeliverables={setDeliverables} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
+
+        <div className="flex flex-col gap-y-16">
+          <div className="flex justify-around">
+            <Button
+              className="px-4 py-3 border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
+              onClick={() =>
+                handlePageChange(currPage > 1 ? currPage - 1 : currPage)
+              }
+            >
+              previous
+            </Button>
+            <Button
+              className="px-4 py-3 border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
+              onClick={() =>
+                handlePageChange(
+                  deliverables != null &&
+                    deliverables.totalCount > currPage * itemsPerPage
+                    ? currPage + 1
+                    : currPage,
+                )
+              }
+            >
+              next
+            </Button>
+          </div>
+          <DeliverableStats refetchTrigger={refetchTrigger} />
         </div>
       </div>
-      <DeliverableStats refetchTrigger={refetchTrigger} />
       {isFormOpen &&
         <div
           id="modal-wrapper"

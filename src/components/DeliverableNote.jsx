@@ -12,10 +12,10 @@ import { StickyNote } from "lucide-react"
 export function DeliverableNote({ note }) {
     return (
         <Popover>
-            <PopoverTrigger asChild>
+            <PopoverTrigger asChild className="rounded-none">
                 <Button variant="outline"><StickyNote /></Button>
             </PopoverTrigger>
-            <PopoverContent align="start">
+            <PopoverContent align="start" className="rounded-none">
                 <PopoverHeader>
                     <PopoverTitle>Note:</PopoverTitle>
                     <PopoverDescription>

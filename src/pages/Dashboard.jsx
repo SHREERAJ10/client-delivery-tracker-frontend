@@ -22,9 +22,9 @@ function Dashboard() {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full flex flex-col gap-y-6 pb-6">
       <DashboardNavbar setIsFormOpen={setIsFormOpen} />
-      <section className="flex flex-col px-10 py-6 gap-y-8">
+      <section className="flex flex-col px-4 md:px-10 gap-y-8">
         <MetricsGrid />
         <div className="flex flex-col gap-y-14 items-start">
           {DELIVERABLE_OVERVIEW_DATA.map((deliverable, index) => {
