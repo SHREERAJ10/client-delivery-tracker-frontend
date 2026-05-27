@@ -18,6 +18,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { SidebarTrigger } from "@/components/ui/sidebar.jsx";
 
 function DeliverablePage() {
 
@@ -79,29 +80,32 @@ function DeliverablePage() {
   return (
     <div className="flex flex-col gap-18 md:gap-8 px-4 md:px-10 pt-10 pb-6">
       <div className="flex flex-col gap-y-6">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <NavLink to="/client" className="uppercase font-semibold tracking-wide">
-                  Client
-                </NavLink>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <NavLink to={`/client/${clientId}/project`} className="uppercase font-semibold tracking-wide">
-                  {currClient ? currClient.name : "Client"}
-                </NavLink>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="uppercase font-semibold tracking-wide">{currProject ? currProject.name : "Project"}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        <div className="flex items-center gap-x-6">
+          <SidebarTrigger className="lg:hidden" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <NavLink to="/client" className="uppercase font-semibold tracking-wide">
+                    Client
+                  </NavLink>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <NavLink to={`/client/${clientId}/project`} className="uppercase font-semibold tracking-wide">
+                    {currClient ? currClient.name : "Client"}
+                  </NavLink>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="uppercase font-semibold tracking-wide">{currProject ? currProject.name : "Project"}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
         <section className="w-full bg-white flex flex-col items-start gap-y-4 md:flex-row md:items-center justify-between">
           <h2 className="font-primary text-3xl font-extrabold">
             {currProject ? currProject.name : "Project"}

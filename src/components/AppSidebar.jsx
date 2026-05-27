@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import getIconFromName from "@/utils/getIconFromName.jsx";
 
@@ -49,6 +50,9 @@ const sidebarItems = [
 ];
 
 export const AppSidebar = () => {
+
+  const {setOpenMobile} = useSidebar();
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="py-6">
@@ -68,7 +72,7 @@ export const AppSidebar = () => {
               {sidebarItems.slice(0, 4).map((item, index) => {
                 return (
                   <SidebarMenuItem key={index}>
-                    <NavLink to={item.path}>
+                    <NavLink to={item.path} onClick={()=>setOpenMobile(false)}>
                       {({ isActive }) => (
                         <SidebarMenuButton
                           isActive={isActive}
@@ -94,7 +98,7 @@ export const AppSidebar = () => {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
+                <SidebarMenuButton className="p-5">
                   <User2 className="w-5! h-5! text-[#111111]" />
                   <span className="font-bold tracking-tight text-base text-[#111111]">
                     Admin

@@ -12,7 +12,7 @@ export default function DashboardNavbar({ setIsFormOpen }) {
   return (
     <nav className="w-full py-3 bg-white border-b flex items-center justify-between px-4 md:px-8">
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-x-5">
         <SidebarTrigger className="lg:hidden" />
         <h2 className="text-2xl font-bold">Delivery Dashboard</h2>
       </div>

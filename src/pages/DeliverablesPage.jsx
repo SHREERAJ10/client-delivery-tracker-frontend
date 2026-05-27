@@ -2,6 +2,7 @@ import Button from '@/components/Button.jsx';
 import DeliverableOverviewTable from '@/components/DeliverableOverviewTable.jsx'
 import Filter from '@/components/Filter.jsx';
 import SearchBar from '@/components/SearchBar.jsx';
+import { SidebarTrigger } from '@/components/ui/sidebar.jsx';
 import AuthContext from '@/context/AuthContext.jsx';
 import { getData } from '@/utils/api.js';
 import React, { useContext, useEffect, useState } from 'react'
@@ -42,8 +43,11 @@ function DeliverablesPage() {
     };
 
     return (
-        <div className="px-10 pt-8 pb-6 flex flex-col gap-6">
-            <h1 className="text-2xl font-bold">Search Deliverables</h1>
+        <div className="px-4 md:px-10 pt-8 pb-6 flex flex-col gap-6">
+            <div className="flex items-center gap-x-5">
+                <SidebarTrigger className="lg:hidden" />
+                <h1 className="text-2xl font-bold">Search Deliverables</h1>
+            </div>
             <section className="flex justify-between flex-col items-start sm:flex-row sm:justify-between sm:items-center gap-4">
                 <SearchBar placeholder="Search deliverables by client, project, deliverable name or status..." currPage={currPage} setSearchResult={setDeliverables} route={deliverablesRoute} />
                 <Filter options={filterOptions} value={deliverableType} onChange={(value) => {
