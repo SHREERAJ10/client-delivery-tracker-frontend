@@ -8,7 +8,7 @@ import SearchBar from "@/components/SearchBar.jsx";
 import AuthContext from "@/context/AuthContext.jsx";
 import { getData } from "@/utils/api.js";
 import { Plus } from "lucide-react";
-import React, { useContext, useEffect, useOptimistic, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useParams, useSearchParams } from "react-router-dom";
 import {
   Breadcrumb,
@@ -28,26 +28,17 @@ function DeliverablePage() {
   const { user } = useContext(AuthContext);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [deliverables, setDeliverables] = useState(null);
-  const [optimisticDeliverables, setOptimisticDeliverables] = useOptimistic(deliverables, (currDeliverables, action) => {
-    switch (action.type) {
-      case "ADD":
-        return { ...currDeliverables, items: [...currDeliverables.items, action.deliverable] };
-      case "UPDATE":
-        return currDeliverables.items.map((deliverable) => deliverable.id == action.deliverable.id ? action.deliverable : deliverable);
-      case "DELETE":
-        return currDeliverables.items.filter((deliverable) => deliverable.id != action.deliverable.id);
-      default:
-        return currDeliverables;
-    }
-  });
 
   const [refetchTrigger, setRefetchTrigger] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('searchQuery') || "");
   const [statusList, setStatusList] = useState([]);
   const [currStatus, setCurrStatus] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const currPage = Number(searchParams.get("page") || 1);
   const statusFilter = searchParams.get("status");
+  const searchQuery = searchParams.get('searchQuery');
   const itemsPerPage = 5;
 
   const handlePageChange = (newPage) => {
@@ -69,13 +60,33 @@ function DeliverablePage() {
 
   useEffect(() => {
     (async () => {
-      const deliverables = await getData(
-        user,
-        `/client/${clientId}/project/${projectId}/deliverable/?page=${currPage}${(statusFilter == null) ? "" : `&status=${statusFilter}`}`,
-      );
+      setIsLoading(true)
+      let url = `/client/${clientId}/project/${projectId}/deliverable/?page=${currPage}`;
+      if (statusFilter) {
+        url += `&status=${statusFilter}`;
+      }
+      if (searchQuery) {
+        url += `&searchQuery=${searchQuery}`;
+      }
+      const deliverables = await getData(user, url);
+      setDeliverables(deliverables);
+      setIsLoading(false);
+    })();
+  }, [statusFilter, searchQuery, currPage]);
+
+  useEffect(() => {
+    (async () => {
+      let url = `/client/${clientId}/project/${projectId}/deliverable/?page=${currPage}`;
+      if (statusFilter) {
+        url += `&status=${statusFilter}`;
+      }
+      if (searchQuery) {
+        url += `&searchQuery=${searchQuery}`;
+      }
+      const deliverables = await getData(user, url);
       setDeliverables(deliverables);
     })();
-  }, [searchParams, refetchTrigger]);
+  }, [refetchTrigger]);
 
   return (
     <div className="flex flex-col gap-18 md:gap-8 px-4 md:px-10 pt-10 pb-6">
@@ -121,23 +132,26 @@ function DeliverablePage() {
       </div>
       <div className="flex flex-col gap-y-10">
         <section className="flex flex-col items-start md:flex-row md:justify-between md:items-center gap-4">
-          <SearchBar placeholder="Search deliverables by name or status..." currPage={currPage} setSearchResult={setDeliverables} route={`/client/${clientId}/project/${projectId}/deliverable`} />
+          <SearchBar placeholder="Search deliverables by name or status..." searchTerm={searchTerm} setSearchTerm={setSearchTerm} searchParams={searchParams} setSearchParams={setSearchParams} />
           <Filter options={statusList} value={currStatus} onChange={(value) => {
             setCurrStatus(value);
+            const newParams = new URLSearchParams();
             if (value != "") {
-              setSearchParams({ status: value });
+              newParams.set("status", value);
+              setSearchParams(newParams);
             }
             else {
-              searchParams.delete("status");
-              setSearchParams(searchParams);
+              newParams.delete("status");
+              setSearchParams(newParams);
             }
           }} />
         </section>
-        <DeliverableTable deliverables={optimisticDeliverables} setOptimisticDeliverables={setOptimisticDeliverables} setDeliverables={setDeliverables} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
+        <DeliverableTable isLoading={isLoading} deliverables={deliverables} setDeliverables={setDeliverables} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
 
         <div className="flex flex-col gap-y-16">
           <div className="flex justify-around">
             <Button
+              type="button"
               className="px-4 py-3 border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
               onClick={() =>
                 handlePageChange(currPage > 1 ? currPage - 1 : currPage)
@@ -146,6 +160,7 @@ function DeliverablePage() {
               previous
             </Button>
             <Button
+              type="button"
               className="px-4 py-3 border-2 border-black hover:text-[#111] hover:bg-white transition-colors duration-150 font-semibold uppercase"
               onClick={() =>
                 handlePageChange(
@@ -168,7 +183,7 @@ function DeliverablePage() {
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
         >
           <Backdrop setIsOpen={setIsFormOpen} />
-          <DeliverableForm mode="CREATE" setIsFormOpen={setIsFormOpen} formType="DEPENDENT" setDeliverables={setDeliverables} setOptimisticDeliverables={setOptimisticDeliverables} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
+          <DeliverableForm mode="CREATE" setIsFormOpen={setIsFormOpen} formType="DEPENDENT" setDeliverables={setDeliverables} triggerRefetch={() => setRefetchTrigger(prev => !prev)} />
         </div>
       }
 

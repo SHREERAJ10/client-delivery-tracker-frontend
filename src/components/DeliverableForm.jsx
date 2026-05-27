@@ -9,7 +9,7 @@ import { convertToISOString } from "@/utils/convertToISOString.js";
 import { useParams } from "react-router-dom";
 import Button from "./Button.jsx";
 
-function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setOptimisticDeliverables, setDeliverables, triggerRefetch = () => { } }) {
+function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setDeliverables, triggerRefetch = () => { } }) {
   const { clientId, projectId } = useParams();
 
   const initialData =
@@ -36,13 +36,12 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setOp
 
   const handleAddOptimisticDeliverable = (optimisticDeliverable) => {
     startTransition(() => {
-      setOptimisticDeliverables({ action: "ADD", project: optimisticDeliverable });
-      setDeliverables((deliverables) => { return { ...deliverables, items: [optimisticDeliverable, ...deliverables.items] } })
+      setDeliverables((deliverables) => { return { ...deliverables, items: [optimisticDeliverable, ...deliverables.items] } });
     });
-  }
+  }  
+
   const handleUpdateOptimisticDeliverable = (optimisticDeliverable) => {
     startTransition(() => {
-      setOptimisticDeliverables({ action: "UPDATE", project: optimisticDeliverable });
       setDeliverables((deliverables) => {
         return { ...deliverables, items: deliverables?.items?.map((deliverable) => deliverable.id == optimisticDeliverable.id ? optimisticDeliverable : deliverable) }
       });
@@ -85,12 +84,13 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setOp
   return (
     <div className="relative w-full max-w-lg bg-gray-50 shadow-md p-6 z-10">
       <h2 className="text-xl font-semibold text-[#111] mb-6">
-        {mode=="UPDATE"?"Update":"Add"} Deliverable
+        {mode == "UPDATE" ? "Update" : "Add"} Deliverable
       </h2>
 
       <form
         className="space-y-5"
         onSubmit={handleSubmit(async (data) => {
+          console.log("test")
           const projectId = getValues("projectId");
           const optimisticDeliverable = {
             id: id || crypto.randomUUID(),
@@ -103,7 +103,7 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setOp
             note: data.note
           }
           if (mode == "CREATE") {
-            if (formType != "DEPENDENT") {
+            if (formType == "DEPENDENT") {
               handleAddOptimisticDeliverable(optimisticDeliverable);
             }
             setIsFormOpen(false);
@@ -257,13 +257,14 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setOp
 
         <div className="flex justify-end gap-3 pt-4">
           <Button
+            type="button"
             variant="outline"
             onClick={() => setIsFormOpen(false)}
           >
             Cancel
           </Button>
 
-          <Button>
+          <Button type="submit">
             Save Deliverable
           </Button>
         </div>

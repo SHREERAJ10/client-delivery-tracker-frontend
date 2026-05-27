@@ -11,7 +11,7 @@ import ConfirmDialog from "./ConfirmDialog.jsx";
 import { useParams } from "react-router-dom";
 import Badge from "./Badge.jsx";
 
-function DeliverableRow({ deliverable, id, setOptimisticDeliverables, setDeliverables, triggerRefetch }) {
+function DeliverableRow({ deliverable, id, setDeliverables, triggerRefetch }) {
   const { clientId, projectId } = useParams();
   const deleteDeliverableRoute = `/client/${clientId}/project/${projectId}/deliverable/${id}`;
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -20,7 +20,6 @@ function DeliverableRow({ deliverable, id, setOptimisticDeliverables, setDeliver
 
   const handleDeleteOptimisticDeliverable = (deliverableId) => {
     startTransition(() => {
-      setOptimisticDeliverables({ action: "DELETE", deliverable: { id: deliverableId } });
       setDeliverables((deliverables) => { return { ...deliverables, items: deliverables?.items?.filter((deliverable) => deliverable.id != deliverableId) } });
     });
   }
@@ -99,7 +98,6 @@ function DeliverableRow({ deliverable, id, setOptimisticDeliverables, setDeliver
               note: deliverable.note,
             }}
             id={id}
-            setOptimisticDeliverables={setOptimisticDeliverables}
             setDeliverables={setDeliverables}
             triggerRefetch={triggerRefetch}
           />

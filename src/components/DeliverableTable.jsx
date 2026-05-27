@@ -1,9 +1,8 @@
 import React from "react";
 import DeliverableRow from "./DeliverableRow.jsx";
+import TableSkeleton from "./TableSkeleton.jsx";
 
-function DeliverableTable({ deliverables, setDeliverables, setOptimisticDeliverables, triggerRefetch }) {
-
-  if (!deliverables) return null;
+function DeliverableTable({ isLoading, deliverables, setDeliverables, triggerRefetch }) {
 
   return (
     <section className="w-full">
@@ -17,22 +16,27 @@ function DeliverableTable({ deliverables, setDeliverables, setOptimisticDelivera
         </div>
 
         <div className="flex flex-col gap-4 md:block">
-          {deliverables?.items?.length ? (
-            deliverables.items.map((deliverable) => (
-              <DeliverableRow
-                key={deliverable.id}
-                id={deliverable.id}
-                deliverable={deliverable}
-                setOptimisticDeliverables={setOptimisticDeliverables}
-                setDeliverables={setDeliverables}
-                triggerRefetch={triggerRefetch}
-              />
-            ))
-          ) : (
-            <p className="py-6 text-center text-sm italic text-gray-400">
-              No Deliverables Found. Add Deliverables to get Started.
-            </p>
-          )}
+          {isLoading ?
+            <TableSkeleton size="grid-cols-[2fr_1fr_1fr_1fr_40px]" />
+            :
+            <>
+              {deliverables?.items?.length ? (
+                deliverables.items.map((deliverable) => (
+                  <DeliverableRow
+                    key={deliverable.id}
+                    id={deliverable.id}
+                    deliverable={deliverable}
+                    setDeliverables={setDeliverables}
+                    triggerRefetch={triggerRefetch}
+                  />
+                ))
+              ) : (
+                <p className="py-6 text-center text-base italic text-gray-500">
+                  No Deliverables Found!
+                </p>
+              )}
+            </>
+          }
         </div>
       </div>
 
