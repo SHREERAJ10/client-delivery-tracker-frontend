@@ -6,11 +6,10 @@ import AuthContext from "./context/AuthContext.jsx";
 import { useContext, useEffect } from "react";
 import { auth } from "../config/firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
-import Layout from "./components/Layout.jsx";
 import ClientPage from "./pages/ClientPage.jsx";
 import ProjectPage from "./pages/ProjectPage.jsx";
 import DeliverablePage from "./pages/DeliverablePage.jsx";
-import DeliverablesPage from "./pages/DeliverablesPage.jsx";
+import SearchDeliverablesPage from "./pages/SearchDeliverablesPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +20,7 @@ const router = createBrowserRouter([
       { path: "client", Component: ClientPage },
       { path: "client/:clientId/project", Component: ProjectPage },
       { path: "client/:clientId/project/:projectId/deliverable", Component: DeliverablePage },
-      { path: "/deliverables", Component: DeliverablesPage },
+      { path: "/deliverables", Component: SearchDeliverablesPage },
     ],
   },
   { path: "/login", Component: Login },
