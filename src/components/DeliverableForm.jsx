@@ -8,6 +8,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { convertToISOString } from "@/utils/convertToISOString.js";
 import { useParams } from "react-router-dom";
 import Button from "./Button.jsx";
+import { toast } from "sonner";
 
 function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setDeliverables, triggerRefetch = () => { } }) {
   const { clientId, projectId } = useParams();
@@ -89,7 +90,7 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setDe
       <form
         className="space-y-5"
         onSubmit={handleSubmit(async (data) => {
-          console.log("test")
+          let response;
           const projectId = getValues("projectId");
           const optimisticDeliverable = {
             id: id || crypto.randomUUID(),
@@ -101,24 +102,33 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setDe
             due_Date: data.due_Date,
             note: data.note
           }
-          if (mode == "CREATE") {
-            if (formType == "DEPENDENT") {
-              handleAddOptimisticDeliverable(optimisticDeliverable);
+
+          try {
+            if (mode == "CREATE") {
+              if (formType == "DEPENDENT") {
+                handleAddOptimisticDeliverable(optimisticDeliverable);
+              }
+              setIsFormOpen(false);
+              response = await createRecord(
+                user,
+                `/client/${currClientId}/project/${projectId}/deliverable`,
+                data,
+              );
             }
-            setIsFormOpen(false);
-            await createRecord(
-              user,
-              `/client/${currClientId}/project/${projectId}/deliverable`,
-              data,
-            );
-            triggerRefetch();
+            else if (mode == "UPDATE") {
+              handleUpdateOptimisticDeliverable(optimisticDeliverable);
+              setIsFormOpen(false);
+              response = await updateRecord(user,
+                `/client/${currClientId}/project/${projectId}/deliverable/${id}`,
+                data,);
+            }
+            toast.success(response.message);
           }
-          else if (mode == "UPDATE") {
-            handleUpdateOptimisticDeliverable(optimisticDeliverable);
-            setIsFormOpen(false);
-            await updateRecord(user,
-              `/client/${currClientId}/project/${projectId}/deliverable/${id}`,
-              data,);
+          catch (err) {
+            setIsFormOpen(true);
+            toast.error(err.message);
+          }
+          finally {
             triggerRefetch();
           }
         })}

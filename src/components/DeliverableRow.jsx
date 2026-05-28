@@ -10,6 +10,7 @@ import Backdrop from "./Backdrop.jsx";
 import ConfirmDialog from "./ConfirmDialog.jsx";
 import { useParams } from "react-router-dom";
 import Badge from "./Badge.jsx";
+import { toast } from "sonner";
 
 function DeliverableRow({ deliverable, id, setDeliverables, triggerRefetch }) {
   const { clientId, projectId } = useParams();
@@ -25,9 +26,19 @@ function DeliverableRow({ deliverable, id, setDeliverables, triggerRefetch }) {
   }
 
   const deleteDeliverable = async () => {
-    handleDeleteOptimisticDeliverable(id);
-    await deleteRecord(user, deleteDeliverableRoute);
-    triggerRefetch();
+    try {
+      handleDeleteOptimisticDeliverable(id);
+      setIsDialogOpen(false);
+      const response = await deleteRecord(user, deleteDeliverableRoute);
+      toast.success(response.message);
+    }
+    catch (err) {
+      setIsDialogOpen(true);
+      toast.error(err.message);
+    }
+    finally {
+      triggerRefetch();
+    }
   };
 
   return (

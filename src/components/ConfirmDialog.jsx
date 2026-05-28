@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Button from "./Button.jsx";
 
 const ConfirmDialog = ({ setIsOpen, dialogText, action }) => {
 
@@ -11,24 +12,23 @@ const ConfirmDialog = ({ setIsOpen, dialogText, action }) => {
 
   return (
     <div className="w-full z-10 max-w-sm rounded-lg bg-white p-6 shadow-xl">
-      <p className="mb-6 text-gray-700 text-lg text-center">{dialogText}</p>
+      <p className="mb-6 text-[#111] text-lg text-center">{dialogText}</p>
 
       <div className="flex justify-end gap-3">
-        <button
+        <Button
+          variant="outline"
           onClick={() => setIsOpen(false)}
-          className="rounded-md px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={async (e) => {
             e.stopPropagation();
-            await action(()=>setIsOpen(false));
+            await action(() => setIsOpen(false));
           }}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
         >
           Confirm
-        </button>
+        </Button>
       </div>
     </div>
   );
