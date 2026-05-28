@@ -6,6 +6,7 @@ import Input from "./Input.jsx";
 import { convertToISOString } from "@/utils/convertToISOString.js";
 import { useParams } from "react-router-dom";
 import Button from "./Button.jsx";
+import { toast } from "sonner";
 
 function ProjectForm({ mode, setIsOpen, id, prefillData, setProjects, triggerRefetch }) {
   const { clientId } = useParams();
@@ -35,7 +36,7 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setProjects, triggerRef
 
   const handleAddOptimisticProject = (optimisticProject) => {
     startTransition(() => {
-      setProjects((projects) => { return { ...projects, items: [...projects.items, optimisticProject] } }
+      setProjects((projects) => { return { ...projects, items: [optimisticProject, ...projects.items] } }
       )
     });
   }
@@ -74,8 +75,7 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setProjects, triggerRef
         <form
           className="space-y-5"
           onSubmit={handleSubmit(async (data) => {
-            console.log("click project")
-
+            let response;
             const optimisticProject = {
               id: id || "temporary",
               name: data.projectName,
@@ -86,16 +86,25 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setProjects, triggerRef
               status_Detail: data.statusDetail,
               due_Date: data.due_Date
             }
-            if (mode == "CREATE") {
-              handleAddOptimisticProject(optimisticProject);
-              await createRecord(user, createRoute, data);
-              triggerRefetch();
-            } else if (mode == "UPDATE") {
-              handleUpdateOptimisticProject(optimisticProject);
-              await updateRecord(user, updateRoute, data);
+            try {
+              if (mode == "CREATE") {
+                handleAddOptimisticProject(optimisticProject);
+                setIsOpen(false);
+                response = await createRecord(user, createRoute, data);
+              } else if (mode == "UPDATE") {
+                handleUpdateOptimisticProject(optimisticProject);
+                setIsOpen(false);
+                response = await updateRecord(user, updateRoute, data);
+              }
+              toast.success(response.message);
+            }
+            catch (err) {
+              setIsOpen(true);
+              toast.error(err.message);
+            }
+            finally {
               triggerRefetch();
             }
-            setIsOpen(false);
           })}
         >
           {currClient &&

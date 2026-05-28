@@ -8,6 +8,7 @@ import AuthContext from "@/context/AuthContext.jsx";
 import ProjectForm from "./ProjectForm.jsx";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Badge from "./Badge.jsx";
+import { toast } from "sonner";
 
 function ProjectCard({
   id,
@@ -33,9 +34,19 @@ function ProjectCard({
   }
 
   const deleteProject = async () => {
-    handleDeleteOptimisticProject(id);
-    await deleteRecord(user, projectRoute);
-    triggerRefetch();
+    try {
+      handleDeleteOptimisticProject(id);
+      setIsDialogOpen(false);
+      const response = await deleteRecord(user, projectRoute);
+      toast.success(response.message);
+    }
+    catch (err) {
+      setIsDialogOpen(true);
+      toast.error(err.message);
+    }
+    finally {
+      triggerRefetch();
+    }
   };
 
   return (
