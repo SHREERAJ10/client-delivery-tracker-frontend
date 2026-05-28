@@ -7,6 +7,8 @@ import { convertToISOString } from "@/utils/convertToISOString.js";
 import { useParams } from "react-router-dom";
 import Button from "./Button.jsx";
 import { toast } from "sonner";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { projectSchema } from "@/utils/schema.js";
 
 function ProjectForm({ mode, setIsOpen, id, prefillData, setProjects, triggerRefetch }) {
   const { clientId } = useParams();
@@ -30,8 +32,9 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setProjects, triggerRef
         due_Date: "",
       };
 
-  const { register, handleSubmit, control } = useForm({
+  const { register, handleSubmit, control, formState: { errors } } = useForm({
     defaultValues: initialData,
+    resolver: zodResolver(projectSchema),
   });
 
   const handleAddOptimisticProject = (optimisticProject) => {
@@ -108,45 +111,54 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setProjects, triggerRef
           })}
         >
           {currClient &&
-            <select
-              name="clientId"
-              id="clientId"
-              {...register("clientId", { required: true })}
-              className="outline outline-gray-300 bg-white p-2 focus:outline-[#111] w-full"
-            >
-              <option value={currClient.id}>{currClient.name}</option>
-            </select>
+            <div className="flex flex-col gap-1.5">
+              <select
+                name="clientId"
+                id="clientId"
+                {...register("clientId", { required: true })}
+                className="outline outline-gray-300 bg-white p-2 focus:outline-[#111] w-full"
+              >
+                <option value={currClient.id}>{currClient.name}</option>
+              </select>
+              {errors.clientId && <p className="text-sm text-red-500">{errors.clientId.message}</p>}
+            </div>
           }
 
-          <Input
-            type="text"
-            label="Project Name"
-            name="projectName"
-            register={register}
-            required
-            placeholder="Enter project name"
-          />
+          <div className="flex flex-col gap-1.5">
+            <Input
+              type="text"
+              label="Project Name"
+              name="projectName"
+              register={register}
+              required
+              placeholder="Enter project name"
+            />
+            {errors.projectName && <p className="text-sm text-red-500">{errors.projectName.message}</p>}
+          </div>
 
 
           <Controller
             name="statusId"
             control={control}
             render={({ field }) => (
-              <select
-                {...field} disabled={statusArr.length === 0}
-                className="outline outline-gray-300 bg-white p-2 focus:outline-[#111] w-full"
-              >
-                <option value="" disabled>
-                  Please Select a Status
-                </option>
-                {statusArr.map((status) => {
-                  return (
-                    <option value={status.id} key={status.id}>
-                      {status.status}
-                    </option>
-                  );
-                })}
-              </select>
+              <div className="flex flex-col gap-1.5">
+                <select
+                  {...field} disabled={statusArr.length === 0}
+                  className="outline outline-gray-300 bg-white p-2 focus:outline-[#111] w-full"
+                >
+                  <option value="" disabled>
+                    Please Select a Status
+                  </option>
+                  {statusArr.map((status) => {
+                    return (
+                      <option value={status.id} key={status.id}>
+                        {status.status}
+                      </option>
+                    );
+                  })}
+                </select>
+                {errors.statusId && <p className="text-sm text-red-500">{errors.statusId.message}</p>}
+              </div>
             )}
           />
 
@@ -154,31 +166,33 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setProjects, triggerRef
             <label className="block text-sm font-medium text-gray-600">
               Due Date
             </label>
-            <input
-              type="date"
-              name="due_Date"
-              className="w-full px-3 py-2.5 text-sm bg-white border border-gray-300 outline-none transition focus-within:ring-1 focus-within:ring-black-500"
-              {...register("due_Date", {
-                setValueAs: (value) =>
-                  value != "" ? convertToISOString(value) : null,
-                required: true,
-              })}
-            />
+            <div className="flex flex-col gap-1.5">
+              <input
+                type="date"
+                name="due_Date"
+                className="w-full px-3 py-2.5 text-sm bg-white border border-gray-300 outline-none transition focus-within:ring-1 focus-within:ring-black-500"
+                {...register("due_Date", {
+                  setValueAs: (value) =>
+                    value != "" ? convertToISOString(value) : null,
+                  required: true,
+                })}
+              />
+              {errors.due_Date && <p className="text-sm text-red-500">{errors.due_Date.message}</p>}
+            </div>
           </div>
 
           <div className="flex flex-col gap-1">
             <h2>Status Detail</h2>
-            <textarea
-              name="statusDetail"
-              placeholder="Status Detail"
-              {...register("statusDetail", {
-                required: true,
-                minLength: 1,
-                maxLength: 100,
-              })}
-              className="w-full p-1 outline outline-gray-300 focus:outline-[#111]"
-              rows="4"
-            />
+            <div className="flex flex-col gap-1.5">
+              <textarea
+                name="statusDetail"
+                placeholder="Status Detail"
+                {...register("statusDetail")}
+                className="w-full p-1 outline outline-gray-300 focus:outline-[#111]"
+                rows="4"
+              />
+              {errors.statusDetail && <p className="text-sm text-red-500">{errors.statusDetail.message}</p>}
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-4">
@@ -197,8 +211,8 @@ function ProjectForm({ mode, setIsOpen, id, prefillData, setProjects, triggerRef
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 

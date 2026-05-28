@@ -5,6 +5,8 @@ import AuthContext from "@/context/AuthContext.jsx";
 import Input from "./Input.jsx";
 import Button from "./Button.jsx";
 import { toast } from "sonner";
+import { clientSchema } from "@/utils/schema.js";
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function ClientForm({ setIsOpen, mode, prefillData, id, setClients, triggerRefetch }) {
   const createRoute = `/client`;
@@ -17,8 +19,9 @@ export default function ClientForm({ setIsOpen, mode, prefillData, id, setClient
         email: "",
       };
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: initialData,
+    resolver: zodResolver(clientSchema),
   });
   const { user } = useContext(AuthContext);
 
@@ -80,23 +83,29 @@ export default function ClientForm({ setIsOpen, mode, prefillData, id, setClient
             }
           })}
         >
-          <Input
-            type="text"
-            label="Client Name"
-            name="clientName"
-            register={register}
-            required
-            placeholder="Enter client name"
-          />
+          <div className="flex flex-col gap-y-1.5">
+            <Input
+              type="text"
+              label="Client Name"
+              name="clientName"
+              register={register}
+              required
+              placeholder="Enter client name"
+            />
+            {errors.clientName && <p className="text-sm text-red-500">{errors.clientName.message}</p>}
+          </div>
 
-          <Input
-            type="email"
-            label="Email"
-            name="email"
-            register={register}
-            required
-            placeholder="Enter email"
-          />
+          <div className="flex flex-col gap-y-1.5">
+            <Input
+              type="email"
+              label="Email"
+              name="email"
+              register={register}
+              required
+              placeholder="Enter email"
+            />
+            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+          </div>
 
           <div className="flex justify-end gap-3 pt-4">
             <Button
