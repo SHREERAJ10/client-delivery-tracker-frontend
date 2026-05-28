@@ -30,6 +30,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { logout } from "@/utils/AuthHandlers.jsx";
 import { NavLink } from "react-router-dom";
+import { toast } from "sonner";
 
 const sidebarItems = [
   {
@@ -51,7 +52,7 @@ const sidebarItems = [
 
 export const AppSidebar = () => {
 
-  const {setOpenMobile} = useSidebar();
+  const { setOpenMobile } = useSidebar();
 
   return (
     <Sidebar collapsible="icon">
@@ -72,7 +73,7 @@ export const AppSidebar = () => {
               {sidebarItems.slice(0, 4).map((item, index) => {
                 return (
                   <SidebarMenuItem key={index}>
-                    <NavLink to={item.path} onClick={()=>setOpenMobile(false)}>
+                    <NavLink to={item.path} onClick={() => setOpenMobile(false)}>
                       {({ isActive }) => (
                         <SidebarMenuButton
                           isActive={isActive}
@@ -113,7 +114,15 @@ export const AppSidebar = () => {
                   </DropdownMenuItem>
                 </a>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout}>
+                <DropdownMenuItem onClick={async () => {
+                  try {
+                    await logout();
+                    toast.success("Logged out successfully!");
+                  }
+                  catch (err) {
+                    toast.error(err.message);
+                  }
+                }}>
                   <LogOutIcon />
                   Log out
                 </DropdownMenuItem>

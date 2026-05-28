@@ -5,16 +5,15 @@ import {
 } from "firebase/auth";
 
 export const handleLogin = async (email, password) => {
-  const userCredential = await signInWithEmailAndPassword(
+  await signInWithEmailAndPassword(
     auth,
     email,
     password
   );
-  const user = userCredential.user;
 };
 
-export const logout = () => {
-  signOut(auth).catch((err) => {
+export const logout = async () => {
+  await signOut(auth).catch((err) => {
     console.log(err);
   });
 };

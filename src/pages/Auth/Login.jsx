@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import getIconFromName from "../../utils/getIconFromName.jsx";
 import { handleLogin } from "../../utils/AuthHandlers.jsx";
+import { toast } from "sonner";
 
 const LOGIN_FIELDS = [
   {
@@ -38,8 +39,14 @@ function Login() {
         <form
           onSubmit={async (e) => {
             e.preventDefault();
+            try {
               await handleLogin(loginData.email, loginData.password);
               navigate("/");
+              toast.success("Logged in successfully!");
+            }
+            catch (err) {
+              toast.error(err.message);
+            }
           }}
         >
           <div className="flex flex-col gap-9">
