@@ -11,6 +11,7 @@ import ProjectPage from "./pages/ProjectPage.jsx";
 import DeliverablePage from "./pages/DeliverablePage.jsx";
 import SearchDeliverablesPage from "./pages/SearchDeliverablesPage.jsx";
 import Loader from "./components/Loader.jsx";
+import { Toaster } from "sonner";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,7 @@ function App() {
 
   return (
     <>
+      <Toaster />
       <RouterProvider router={router} />
     </>
   );
