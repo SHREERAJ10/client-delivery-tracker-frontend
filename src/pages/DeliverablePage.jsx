@@ -118,7 +118,7 @@ function DeliverablePage() {
           </Breadcrumb>
         </div>
         <section className="w-full bg-white flex flex-col items-start gap-y-4 md:flex-row md:items-center justify-between">
-          <h2 className="font-primary text-3xl font-extrabold">
+          <h2 className="text-3xl font-extrabold">
             {currProject ? currProject.name : "Project"}
           </h2>
 

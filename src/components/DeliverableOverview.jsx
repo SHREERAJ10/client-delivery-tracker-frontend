@@ -24,7 +24,7 @@ function DeliverableOverview({ heading, deliverableRoute, type }) {
         <h2 className="text-black font-bold text-base lg:text-xl mb-4 uppercase">
           {heading}
         </h2>
-        <NavLink to={`/deliverables/?type=${type}`} className="text-black font-secondary text-sm font-semibold hover:underline uppercase">
+        <NavLink to={`/deliverables/?type=${type}`} className="text-black text-sm font-semibold hover:underline uppercase">
           View all
         </NavLink>
       </div>

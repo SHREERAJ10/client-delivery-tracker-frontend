@@ -35,7 +35,7 @@ function MetricsGrid() {
   )
 
   return (
-    <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 font-primary">
+    <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
       {metrics.slice(0, 3).map((item) => (
         <div key={item.key} className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-none shadow-sm flex flex-col justify-center items-start pl-4 md:pl-8 py-10">
           <span className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-widest">

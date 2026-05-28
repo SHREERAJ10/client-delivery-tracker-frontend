@@ -106,7 +106,7 @@ function ProjectPage() {
           </Breadcrumb>
         </div>
         <section className="w-full bg-white flex flex-col items-start gap-y-4 md:flex-row md:items-center justify-between">
-          <h2 className="font-primary text-3xl font-extrabold">
+          <h2 className="text-3xl font-extrabold">
             {currClient ? currClient.name : "Project"}
           </h2>
 

@@ -1,4 +1,4 @@
-import { Briefcase, Github, Rocket, User, User2 } from "lucide-react";
+import { Briefcase, Rocket, User2 } from "lucide-react";
 
 import {
   Sidebar,
@@ -61,7 +61,7 @@ export const AppSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton>
               <Rocket className="w-6! h-6! text-[#111111]" />
-              <h1 className="font-primary text-xl font-bold uppercase">Agency Flow</h1>
+              <h1 className="text-xl font-bold uppercase">Agency Flow</h1>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
