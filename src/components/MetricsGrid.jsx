@@ -56,7 +56,7 @@ function MetricsGrid() {
             <span className="text-5xl font-bold text-black dark:text-white tracking-tight">
               {metrics[metrics.length - 1].value}
             </span>
-            {metrics[metrics.length - 1].value > 1 && <span class="text-xs text-white bg-black px-2 py-2 font-bold tracking-widest uppercase">ACTION REQUIRED</span>}
+            {metrics[metrics.length - 1].value > 1 && <span className="text-xs text-white bg-black px-2 py-2 font-bold tracking-widest uppercase">ACTION REQUIRED</span>}
 
           </div>
         </div>

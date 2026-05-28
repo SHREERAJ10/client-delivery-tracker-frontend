@@ -14,7 +14,6 @@ function Stats({ item, icons }) {
                     <h3 className="text-xs font-medium text-gray-800 uppercase tracking-wide">
                         {item.label}
                     </h3>
-                    {console.log(item.status)}
                     <div className="flex items-baseline gap-1.5">
                         <span className="text-xl font-extrabold text-gray-900">
                             {item.value} {item.status ?? ""}

@@ -25,12 +25,12 @@ function ClientTable({ clients, setClients, triggerRefetch, isLoading }) {
               {clients?.items?.length ? (
                 clients.items.map((client) => (
                   <ClientRow
+                    key={client.id}
                     client={client}
                     onClick={() => navigate(`/client/${client.id}/project`)}
                     setClients={setClients}
                     triggerRefetch={triggerRefetch}
                   />
-
                 ))
               ) : (
                 <p className="py-6 text-center text-sm italic text-gray-400">
