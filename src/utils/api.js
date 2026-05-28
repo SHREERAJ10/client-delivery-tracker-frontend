@@ -1,6 +1,8 @@
+const BACKEND_URL = `https://client-delivery-tracker-backend.onrender.com`
+
 export const getData = async (user, route) => {
   const token = await user.getIdToken();
-  const response = await fetch(`http://localhost:3000${route}`, {
+  const response = await fetch(`${BACKEND_URL}${route}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -18,7 +20,7 @@ export const getData = async (user, route) => {
 
 export const createRecord = async (user, route, data) => {
   const token = await user.getIdToken();
-  const response = await fetch(`http://localhost:3000${route}`, {
+  const response = await fetch(`${BACKEND_URL}${route}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -38,7 +40,7 @@ export const createRecord = async (user, route, data) => {
 
 export const updateRecord = async (user, route, data) => {
   const token = await user.getIdToken();
-  const response = await fetch(`http://localhost:3000${route}`, {
+  const response = await fetch(`${BACKEND_URL}${route}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -58,7 +60,7 @@ export const updateRecord = async (user, route, data) => {
 
 export const deleteRecord = async (user, route) => {
   const token = await user.getIdToken();
-  const response = await fetch(`http://localhost:3000${route}`, {
+  const response = await fetch(`${BACKEND_URL}${route}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
