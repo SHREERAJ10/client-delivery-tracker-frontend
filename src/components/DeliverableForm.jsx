@@ -38,7 +38,7 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setDe
     startTransition(() => {
       setDeliverables((deliverables) => { return { ...deliverables, items: [optimisticDeliverable, ...deliverables.items] } });
     });
-  }  
+  }
 
   const handleUpdateOptimisticDeliverable = (optimisticDeliverable) => {
     startTransition(() => {
@@ -63,15 +63,14 @@ function DeliverableForm({ mode, formType, prefillData, setIsFormOpen, id, setDe
 
   // filter projects based on clientId
   useEffect(() => {
-    if (options.length != 0) {
-      const filteredProjects =
-        currClientId == ""
-          ? projects
-          : projects.filter((project) => {
-            return project.clientId == currClientId;
-          });
-      setOptions(filteredProjects);
-    }
+    const filteredProjects =
+      currClientId == ""
+        ? projects
+        : projects.filter((project) => {
+          return project.clientId == currClientId;
+        });
+    setOptions(filteredProjects);
+
   }, [currClientId]);
 
   useEffect(() => {
