@@ -3,13 +3,14 @@ import Login from "./pages/Auth/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AuthContext from "./context/AuthContext.jsx";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { auth } from "../config/firebase.js";
 import { onAuthStateChanged } from "firebase/auth";
 import ClientPage from "./pages/ClientPage.jsx";
 import ProjectPage from "./pages/ProjectPage.jsx";
 import DeliverablePage from "./pages/DeliverablePage.jsx";
 import SearchDeliverablesPage from "./pages/SearchDeliverablesPage.jsx";
+import Loader from "./components/Loader.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
 
 function App() {
   const { setUser } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currUser) => {
       if (currUser) {
@@ -35,9 +37,12 @@ function App() {
       } else {
         setUser(null);
       }
+      setIsLoading(false);
     });
     return () => unsubscribe();
   }, []);
+
+  if (isLoading) return <Loader />
 
   return (
     <>
