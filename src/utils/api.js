@@ -8,7 +8,12 @@ export const getData = async (user, route) => {
     },
   });
 
-  return (await response.json()).data;
+  const parsedResponse = await response.json();
+  if(!response.ok){
+    throw new Error(parsedResponse.error);
+  }
+
+  return parsedResponse.data;
 };
 
 export const createRecord = async (user, route, data) => {
@@ -21,7 +26,14 @@ export const createRecord = async (user, route, data) => {
     },
     body: JSON.stringify(data),
   });
-  return (await response.json()).data;
+
+  const parsedResponse = await response.json();
+
+  if (!response.ok) {
+    throw new Error(parsedResponse.error);
+  }
+
+  return parsedResponse;
 };
 
 export const updateRecord = async (user, route, data) => {
@@ -34,7 +46,14 @@ export const updateRecord = async (user, route, data) => {
     },
     body: JSON.stringify(data),
   });
-  return (await response.json());
+
+  const parsedResponse = await response.json();
+
+  if (!response.ok) {
+    throw new Error(parsedResponse.error);
+  }
+
+  return parsedResponse;
 };
 
 export const deleteRecord = async (user, route) => {
@@ -46,5 +65,9 @@ export const deleteRecord = async (user, route) => {
       authorization: `Bearer ${token}`,
     },
   });
-  return (await response.json());
+  const parsedResponse = await response.json();
+  if (!response.ok) {
+    throw new Error(parsedResponse.error);
+  }
+  return parsedResponse;
 };
