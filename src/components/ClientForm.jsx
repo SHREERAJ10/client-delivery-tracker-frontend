@@ -4,6 +4,7 @@ import { startTransition, useContext, useEffect } from "react";
 import AuthContext from "@/context/AuthContext.jsx";
 import Input from "./Input.jsx";
 import Button from "./Button.jsx";
+import { toast } from "sonner";
 
 export default function ClientForm({ setIsOpen, mode, prefillData, id, setClients, triggerRefetch }) {
   const createRoute = `/client`;
@@ -57,17 +58,24 @@ export default function ClientForm({ setIsOpen, mode, prefillData, id, setClient
               name: data.clientName,
               email: data.email,
             }
-
-            if (mode == "CREATE") {
-              handleAddOptimisticClient(optimisticClient);
-              setIsOpen(false);
-              await createRecord(user, createRoute, data);
-              triggerRefetch();
-
-            } else if (mode == "UPDATE") {
-              handleUpdateOptimisticClient(optimisticClient);
-              setIsOpen(false);
-              await updateRecord(user, updateRoute, data);
+            let response;
+            try {
+              if (mode == "CREATE") {
+                handleAddOptimisticClient(optimisticClient);
+                setIsOpen(false);
+                response = await createRecord(user, createRoute, data);
+              } else if (mode == "UPDATE") {
+                handleUpdateOptimisticClient(optimisticClient);
+                setIsOpen(false);
+                response = await updateRecord(user, updateRoute, data);
+              }
+              toast.success(response.message);
+            }
+            catch (err) {
+              setIsOpen(true);
+              toast.error(err.message);
+            }
+            finally {
               triggerRefetch();
             }
           })}

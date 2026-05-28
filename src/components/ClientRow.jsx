@@ -7,6 +7,7 @@ import StatCell from "./StatCell.jsx";
 import { deleteRecord } from "@/utils/api.js";
 import AuthContext from "@/context/AuthContext.jsx";
 import ConfirmDialog from "./ConfirmDialog.jsx";
+import { toast } from "sonner";
 
 function ClientRow({ onClick, client, setClients, triggerRefetch }) {
   const deleteClientRoute = `/client/${client.id}`;
@@ -21,10 +22,19 @@ function ClientRow({ onClick, client, setClients, triggerRefetch }) {
   }
 
   const deleteClient = async () => {
-    handleDeleteOptimisticProject(client.id);
-    setIsDialogOpen(false);
-    await deleteRecord(user, deleteClientRoute);
-    triggerRefetch();
+    try {
+      handleDeleteOptimisticProject(client.id);
+      setIsDialogOpen(false);
+      const response = await deleteRecord(user, deleteClientRoute);
+      toast.success(response.message);
+    }
+    catch (err) {
+      setIsDialogOpen(true);
+      toast.error(err.message);
+    }
+    finally {
+      triggerRefetch();
+    }
   };
 
   return (
